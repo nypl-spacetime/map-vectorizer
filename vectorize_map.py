@@ -347,6 +347,8 @@ def main(argv):
 	os.system("rm " + dir_base_name + "-tmp-*.dbf")
 	os.system("rm " + dir_base_name + "-tmp-*.shx")
 	os.system("rm " + dir_base_name + "-tmp*.tif")
+	os.system("rm " + dir_base_name + "-comparative*")
+	os.system("rm " + dir_base_name + ".*")
 
 	endtime = datetime.datetime.now()
 	deltatime = endtime-starttime
