@@ -343,7 +343,10 @@ def main(argv):
 	os.system("rm " + outputgdal)
 	os.system("rm " + outputwsg)
 	os.system("rm " + thresholdfile)
-	os.system("rm " + dir_base_name + "-tmp*.*")
+	os.system("rm " + dir_base_name + "-tmp-*.shp")
+	os.system("rm " + dir_base_name + "-tmp-*.dbf")
+	os.system("rm " + dir_base_name + "-tmp-*.shx")
+	os.system("rm " + dir_base_name + "-tmp*.tif")
 
 	endtime = datetime.datetime.now()
 	deltatime = endtime-starttime
