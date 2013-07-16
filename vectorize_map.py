@@ -15,10 +15,13 @@ def main(argv):
 	currentchunk = 0
 	totalsubsets = 0
 	basecolors = [
-		[255,255,244] # paper
-		,[253,217,193] # pink
-		,[216,216,138] # green
-		,[255,254,193] # yellow
+		[255,255,255] # paper
+		,[255,204,190] # pink
+		,[247,154,152] # dark red
+		,[182,206,178] # green
+		,[255,249,108] # yellow
+		,[208,232,235] # light blue
+		,[147,183,209] # dark blue
 	]
 
 	try:
