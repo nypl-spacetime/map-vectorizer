@@ -1,6 +1,7 @@
 library(rgdal)
 library(alphahull)
 library(igraph)
+library(shapefiles)
 args <- commandArgs(trailingOnly = TRUE)
 path = args[1]
 layer = args[2]
