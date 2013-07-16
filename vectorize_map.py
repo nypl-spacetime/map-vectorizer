@@ -1,6 +1,11 @@
 #!/usr/bin/python
 import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob
 
+import cv2, sys
+from cv2 import cv
+import os
+import numpy as np
+
 def main(argv):
 	inputfile = ''
 	tempgdalfile = ''
@@ -87,7 +92,7 @@ def main(argv):
 
 	print "\n"
 	print 'Origin GeoTIFF :', inputfile
-	print 'Destination    :', tempgdalfile
+	print 'Destination	:', tempgdalfile
 
 	# BETTER (SOME) ERROR HANDLING SHOULD BE DONE!!!!!
 
@@ -261,6 +266,25 @@ def main(argv):
 	# 6 get the FeatureDefn for the output layer
 	featureDefn = outLayer.GetLayerDefn()
 
+	# new field definitions for this shapefile
+	# color definition
+	colorDefn = ogr.FieldDefn("Color", ogr.OFTString)
+	colorDefn.SetWidth(1)
+	colorDefn.SetPrecision(0)
+	outLayer.CreateField( colorDefn )
+
+	# dot count definition
+	dotCountDefn = ogr.FieldDefn("Dot Count", ogr.OFTString)
+	dotCountDefn.SetWidth(2)
+	dotCountDefn.SetPrecision(0)
+	outLayer.CreateField( dotCountDefn )
+
+	# dot type definition
+	dotTypeDefn = ogr.FieldDefn("Dot Type", ogr.OFTString)
+	dotTypeDefn.SetWidth(1)
+	dotTypeDefn.SetPrecision(0)
+	outLayer.CreateField( dotTypeDefn )
+
 	polygonfiles = []
 	for files in os.listdir(path):
 		if files.endswith(".shp") and files.find('-polygon') != -1:
@@ -280,7 +304,8 @@ def main(argv):
 				blue = int(values[0][2])
 				nearest = 100000
 				nearestcolor = []
-				for color in basecolors:
+				nearestcolorindex = -1
+				for i, color in enumerate(basecolors):
 					dred = (color[0] - red) * (color[0] - red)
 					dgreen = (color[1] - green) * (color[1] - green)
 					dblue = (color[2] - blue) * (color[2] - blue)
@@ -288,14 +313,17 @@ def main(argv):
 					if dist < nearest:
 						nearest = dist
 						nearestcolor = color
+						nearestcolorindex = i
 				# only add if NOT paper
 				if nearestcolor != basecolors[0]:
+					# check for dots
+					circle_data = circleDetect(extractedfile)
 					# add to array
-					polygonfiles.append(polygonfile)
+					polygonfiles.append([polygonfile, nearestcolorindex, circle_data])
 
 	for files in polygonfiles:
 		# 3 open the input data source and get the layer
-		tempfile = files #dir_base_name + '-tmp-' + str(currentsubset) + '-traced.shp'
+		tempfile = files[0] #dir_base_name + '-tmp-' + str(currentsubset) + '-traced.shp'
 		inDS = driver.Open(tempfile, 0) #shows cover at given points
 		if inDS is None:
 			print 'Could not open temporary shapefile'
@@ -312,10 +340,17 @@ def main(argv):
 			geom = inFeature.GetGeometryRef()
 			outFeature.SetGeometry(geom) #move it to the new feature
 
-			# !!! IMPORTANT MUST FIX !!! set the attributes
 			DN = inFeature.GetField('DN')
 			outFeature.SetField('DN', DN) #move it to the new feature
 
+			outFeature.SetField('Color', files[1])
+
+			outFeature.SetField('Dot Count', files[2]["count"])
+
+			outFeature.SetField('Dot Type', files[2]["is_outline"])
+
+			# outFeature.SetField('circle_count', files[2]["circle_count"])
+			# outFeature.SetField('circle_type', files[2]["is_outline"])
 			# add the feature to the output layer
 			outLayer.CreateFeature(outFeature)
 
@@ -346,7 +381,7 @@ def main(argv):
 	os.system("rm " + dir_base_name + "-tmp-*.shp")
 	os.system("rm " + dir_base_name + "-tmp-*.dbf")
 	os.system("rm " + dir_base_name + "-tmp-*.shx")
-	os.system("rm " + dir_base_name + "-tmp*.tif")
+	# os.system("rm " + dir_base_name + "-tmp*.tif")
 	os.system("rm " + dir_base_name + "-comparative*")
 	os.system("rm " + dir_base_name + ".*")
 
@@ -354,6 +389,66 @@ def main(argv):
 	deltatime = endtime-starttime
 
 	print "Operation took " + str(deltatime.seconds) + " seconds"
+
+def circleDetect(inputfile):
+	max_dist = 20 # distance between circles to consider it an empty circle
+
+	im=cv2.imread(inputfile)
+
+	gray=cv2.cvtColor(im,cv.CV_RGB2GRAY)
+
+	# blur = cv2.GaussianBlur(gray, (9,9), 2, 2)
+
+	# canny = cv.CreateImage(cv.GetSize(im),IPL_DEPTH_8U,1)
+
+	# rgbcanny = cv.CreateImage(cv.GetSize(im),IPL_DEPTH_8U,3)
+
+	# cvCanny(gray, canny, 40, 240, 3)
+
+	circles = cv2.HoughCircles(gray, cv.CV_HOUGH_GRADIENT, 1, 2, np.array([]), 200, 8, 4, 8)
+
+	if not (isinstance(circles, np.ndarray) and circles.shape[1] > 0):
+		return {"count":0, "is_outline": 0, "circles":circles}
+
+	total_circles = circles.shape[1]
+
+	if total_circles == 1:
+		# only one circle and it is filled
+		return {"count":total_circles, "is_outline": 0, "circles":circles}
+	
+	outline_circles = 0
+
+	current_circle = -1
+	current_x = circles[0][0][0]
+	current_y = circles[0][0][1]
+	# an array of circles with distance less than max_dist
+	# starts with the first circle
+	unique_circles = [[current_x, current_y]]
+	delta_x = 0
+	delta_y = 0
+	for n in range(1, total_circles):
+		circle = circles[0][n]
+		current_x = circle[0]
+		current_y = circle[1]
+		# distance to all the unique circles
+		last_unique = circle
+		is_inside = False
+		for unique in unique_circles:
+			last_unique = unique
+			delta_x = unique[0] - current_x
+			delta_y = unique[1] - current_y
+			square_dist = (delta_x*delta_x) + (delta_y*delta_y)
+			if square_dist <= max_dist:
+				# circle is inside another unique
+				is_inside = True
+				# we assume all are outlines if at least one is outline
+				outline_circles = 1
+				break
+		if not is_inside:
+			unique_circles.append([current_x, current_y])
+		# cv2.circle(im,(circle[0],circle[1]),circle[2],(0,0,255), 1)
+
+	return {"count":len(unique_circles), "is_outline": outline_circles, "circles":circles}
 
 if __name__ == "__main__":
 	main(sys.argv[1:])

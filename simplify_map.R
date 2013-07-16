@@ -61,9 +61,15 @@ for (i in 1: num) {
 					# join the ends
 					pathX = c(pathX, pathX[1])
 					p = Polygon(x.as$x[pathX, ])
+					# now we simplify the polygon (reduce edge count)
+					temp <- as.data.frame(p@coords)
+					names(temp) <- c("x","y")
+					simple = dp(temp,0.5)
+					p@coords <- as.matrix(cbind(simple$x, simple$y))
+					# finished simplifying
 					ps = Polygons(list(p),1)
 					sps = SpatialPolygons(list(ps), , myPolygons@proj4string)
-					data = data.frame(DN=i) # this is problematic... need to fix/change to DN
+					data = data.frame(DN=i) # the polygon ID
 					output = SpatialPolygonsDataFrame(sps, data)
 					writeOGR(output, paste(finalout, "-", i, "-polygon.shp", sep=""), layer, driver="ESRI Shapefile")
 				}
