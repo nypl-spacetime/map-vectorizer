@@ -16,12 +16,18 @@ def main(argv):
 	totalsubsets = 0
 	basecolors = [
 		[255,255,255] # paper
-		,[255,204,190] # pink
-		,[247,154,152] # dark red
-		,[182,206,178] # green
+
+		,[253,217,193] # perris pink
+		,[216,216,138] # perris green
+		,[255,254,193] # perris yellow
+
+		,[253,183,175] # pink
+		,[218,123,122] # dark red
+		,[130,164,80] # green
 		,[255,249,108] # yellow
-		,[208,232,235] # light blue
-		,[147,183,209] # dark blue
+		,[137,174,163] # greenish blue
+		,[220,244,246] # light blue
+		,[134,176,207] # "navy" blue
 	]
 
 	try:
@@ -63,13 +69,16 @@ def main(argv):
 	fullpath = os.path.abspath(__file__)
 	base_name = inputfile[:inputfile.find(".tif")]
 
-	# create a folder to store all this crap
+	# create a folder to store all this
 	directory = base_name 
 	if not os.path.exists(directory):
 		os.makedirs(directory)
 
 	# GIMP processing
 	dir_base_name = directory + "/" + base_name
+
+	# create a log file
+	logfile = open(dir_base_name + "-log.txt", "w")
 
 	thresholdfile = dir_base_name + "-threshold-tmp.tif"
 	comparativefile = dir_base_name + "-comparative-tmp.tif"
@@ -80,11 +89,13 @@ def main(argv):
 	print inputfile + " into threshold file: " + thresholdfile
 
 	command = gimp_path + ' -i -b \'(nypl-create-threshold "' + inputfile + '" "' + thresholdfile + '")\' -b \'(gimp-quit 0)\''
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
 	print inputfile + " into comparative file: " + comparativefile
 	command = gimp_path + ' -i -b \'(nypl-create-comparative "' + inputfile + '" "' + comparativefile + '")\' -b \'(gimp-quit 0)\''
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
@@ -123,24 +134,28 @@ def main(argv):
 	# print outputgdal
 	outputwsg = dir_base_name + "-wsg-tmp.tif"
 	command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + thresholdfile + ' ' + outputwsg
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
 	print ""
 	outputgdal = dir_base_name + "-gdal-tmp.tif"
 	command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + outputwsg + ' ' + outputgdal
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
 	# transform comparative
 	comparativewsg = dir_base_name + "-comparative-wsg-tmp.tif"
 	command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + comparativefile + ' ' + comparativewsg
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
 	print ""
 	comparativegdal = dir_base_name + "-comparative-gdal-tmp.tif"
 	command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + comparativewsg + ' ' + comparativegdal
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
@@ -151,6 +166,7 @@ def main(argv):
 	print "----------------------"
 	shapefile = dir_base_name + '.shp'
 	command = 'gdal_polygonize.py ' + outputgdal + ' -f "ESRI Shapefile" ' + shapefile + ' ' + base_name
+	logfile.write(command + "\n")
 	print command
 	os.system(command)
 
@@ -247,6 +263,7 @@ def main(argv):
 		routput = path + '/' + base_name + '-tmp-' + str(currentsubset)
 		layer = base_name + '-tmp-' + str(currentsubset)
 		command = 'R --vanilla --silent --slave -f simplify_map.R --args ' + rinput + ' ' + layer + ' ' + routput
+		logfile.write(command + "\n")
 		print command
 		os.system(command)
 		currentsubset = currentsubset + 1
@@ -294,7 +311,9 @@ def main(argv):
 			polygonfile = path + "/" + files
 			extractedfile = path + "/" + files[:files.find(".shp")] + "-extracted.tif"
 			# extract bitmap from original
-			command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of GTiff " + comparativegdal + " " + extractedfile
+			command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of Tiff " + comparativegdal + " " + extractedfile
+			logfile.write(command + "\n")
+			print command
 			os.system(command)
 			# calculate color
 			# shrink to 1x1 and find value
@@ -390,6 +409,9 @@ def main(argv):
 
 	endtime = datetime.datetime.now()
 	deltatime = endtime-starttime
+
+	# close log file
+	logfile.close()
 
 	print "Operation took " + str(deltatime.seconds) + " seconds"
 

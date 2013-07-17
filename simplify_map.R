@@ -13,6 +13,7 @@ minarea=20
 maxarea=3000
 num = length(myPolygons)
 poly.list = vector('list')
+logfile <- file(paste(finalout, "-rlog.txt", sep=""), "a") # log file
 for (i in 1: num) {
 	poly = myPolygons@polygons[[i]]
 	if (poly@area > minarea && poly@area < maxarea) {
@@ -76,6 +77,9 @@ for (i in 1: num) {
 				}
 			}
 			attempts = attempts + 1
+		}
+		if (error > 0) {
+			writeLines(paste(i," could not be written: ", error, sep=""), logfile)
 		}
 	}
 }
