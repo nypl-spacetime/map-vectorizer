@@ -309,15 +309,17 @@ def main(argv):
 	for files in os.listdir(path):
 		if files.endswith(".shp") and files.find('-polygon') != -1:
 			polygonfile = path + "/" + files
+			# apply a projection so gdalwarp doesnt complain
+			os.system("cp " + dir_base_name + ".prj " + path + "/" + files[:files.find(".shp")] + ".prj")
 			extractedfile = path + "/" + files[:files.find(".shp")] + "-extracted.tif"
 			# extract bitmap from original
-			command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of Tiff " + comparativegdal + " " + extractedfile
+			command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of GTiff " + comparativegdal + " " + extractedfile
 			logfile.write(command + "\n")
 			print command
 			os.system(command)
 			# calculate color
 			# shrink to 1x1 and find value
-			pixelvalue = subprocess.Popen(["convert", extractedfile, "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
+			pixelvalue = subprocess.Popen(["convert", "-quiet", extractedfile, "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
 			pattern = re.compile(r"0,0: \(([0-9]*),([0-9]*),([0-9]*),[0-9]*.*")
 			values = pattern.findall(pixelvalue)
 			if len(values) > 0:
@@ -403,7 +405,8 @@ def main(argv):
 	os.system("rm " + dir_base_name + "-tmp-*.shp")
 	os.system("rm " + dir_base_name + "-tmp-*.dbf")
 	os.system("rm " + dir_base_name + "-tmp-*.shx")
-	# os.system("rm " + dir_base_name + "-tmp*.tif")
+	os.system("rm " + dir_base_name + "-tmp-*.prj")
+	os.system("rm " + dir_base_name + "-tmp*.tif")
 	os.system("rm " + dir_base_name + "-comparative*")
 	os.system("rm " + dir_base_name + ".*")
 
