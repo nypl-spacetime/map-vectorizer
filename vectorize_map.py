@@ -15,19 +15,20 @@ def main(argv):
 	currentchunk = 0
 	totalsubsets = 0
 	basecolors = [
-		[255,255,255] # paper
+		[216,213,204] # paper
 
 		,[253,217,193] # perris pink
 		,[216,216,138] # perris green
 		,[255,254,193] # perris yellow
 
-		,[253,183,175] # pink
-		,[218,123,122] # dark red
-		,[130,164,80] # green
-		,[255,249,108] # yellow
+		,[199,179,173] # pink
+		,[179,155,157] # dark red
+		,[149,156,141] # green
+		,[195,189,154] # yellow
+		,[255,225,40] # bright yellow
 		,[137,174,163] # greenish blue
-		,[220,244,246] # light blue
-		,[134,176,207] # "navy" blue
+		,[187,194,192] # light blue
+		,[161,175,190] # "navy" blue
 	]
 
 	try:
@@ -59,7 +60,7 @@ def main(argv):
 	print "By: Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs"
 	print ""
 
-	gimp_path = raw_input("GIMP executable path [" + defaultgimp +  "]: ")
+	gimp_path = "" # raw_input("GIMP executable path [" + defaultgimp +  "]: ")
 
 	if gimp_path == '':
 		gimp_path = defaultgimp
@@ -78,26 +79,26 @@ def main(argv):
 	dir_base_name = directory + "/" + base_name
 
 	# create a log file
-	logfile = open(dir_base_name + "-log.txt", "w")
+	logfile = open(directory + "/py-log.txt", "w")
 
 	thresholdfile = dir_base_name + "-threshold-tmp.tif"
 	comparativefile = dir_base_name + "-comparative-tmp.tif"
 
-	print ""
+	print "\n\n"
 	print "Thresholdizing:"
 	print "---------------"
 	print inputfile + " into threshold file: " + thresholdfile
 
 	command = gimp_path + ' -i -b \'(nypl-create-threshold "' + inputfile + '" "' + thresholdfile + '")\' -b \'(gimp-quit 0)\''
 	logfile.write(command + "\n")
-	print command
+	# print command
 	os.system(command)
 
-	print inputfile + " into comparative file: " + comparativefile
-	command = gimp_path + ' -i -b \'(nypl-create-comparative "' + inputfile + '" "' + comparativefile + '")\' -b \'(gimp-quit 0)\''
-	logfile.write(command + "\n")
-	print command
-	os.system(command)
+	# print inputfile + " into comparative file: " + comparativefile
+	# command = gimp_path + ' -i -b \'(nypl-create-comparative "' + inputfile + '" "' + comparativefile + '")\' -b \'(gimp-quit 0)\''
+	# logfile.write(command + "\n")
+	# # print command
+	# os.system(command)
 
 	tempgdalfile = dir_base_name + "-tmp.tif"
 
@@ -135,29 +136,29 @@ def main(argv):
 	outputwsg = dir_base_name + "-wsg-tmp.tif"
 	command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + thresholdfile + ' ' + outputwsg
 	logfile.write(command + "\n")
-	print command
+	# print command
 	os.system(command)
 
 	print ""
 	outputgdal = dir_base_name + "-gdal-tmp.tif"
 	command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + outputwsg + ' ' + outputgdal
 	logfile.write(command + "\n")
-	print command
+	# print command
 	os.system(command)
 
-	# transform comparative
-	comparativewsg = dir_base_name + "-comparative-wsg-tmp.tif"
-	command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + comparativefile + ' ' + comparativewsg
-	logfile.write(command + "\n")
-	print command
-	os.system(command)
+	# # transform comparative
+	# comparativewsg = dir_base_name + "-comparative-wsg-tmp.tif"
+	# command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + comparativefile + ' ' + comparativewsg
+	# logfile.write(command + "\n")
+	# # print command
+	# os.system(command)
 
-	print ""
-	comparativegdal = dir_base_name + "-comparative-gdal-tmp.tif"
-	command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + comparativewsg + ' ' + comparativegdal
-	logfile.write(command + "\n")
-	print command
-	os.system(command)
+	# print ""
+	# comparativegdal = dir_base_name + "-comparative-gdal-tmp.tif"
+	# command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + comparativewsg + ' ' + comparativegdal
+	# logfile.write(command + "\n")
+	# # print command
+	# os.system(command)
 
 	# QGIS POLYGONIZE
 
@@ -167,7 +168,7 @@ def main(argv):
 	shapefile = dir_base_name + '.shp'
 	command = 'gdal_polygonize.py ' + outputgdal + ' -f "ESRI Shapefile" ' + shapefile + ' ' + base_name
 	logfile.write(command + "\n")
-	print command
+	# print command
 	os.system(command)
 
 	# Split resulting megapolygon file into smaller chunks
@@ -260,11 +261,11 @@ def main(argv):
 	currentsubset = 1
 	while currentsubset <= totalsubsets:
 		rinput = path + '/' + base_name + '-tmp-' + str(currentsubset) + '.shp'
-		routput = path + '/' + base_name + '-tmp-' + str(currentsubset)
+		routput = path + '/' + base_name + '-tmp-' # + str(currentsubset)
 		layer = base_name + '-tmp-' + str(currentsubset)
-		command = 'R --vanilla --silent --slave -f simplify_map.R --args ' + rinput + ' ' + layer + ' ' + routput
+		command = 'R --vanilla --silent --slave -f simplify_map.R --args ' + rinput + ' ' + layer + ' ' + routput + ' ' + path + ' ' + str(currentsubset)
 		logfile.write(command + "\n")
-		print command
+		# print command
 		os.system(command)
 		currentsubset = currentsubset + 1
 
@@ -289,7 +290,7 @@ def main(argv):
 	# new field definitions for this shapefile
 	# color definition
 	colorDefn = ogr.FieldDefn("Color", ogr.OFTString)
-	colorDefn.SetWidth(1)
+	colorDefn.SetWidth(2)
 	colorDefn.SetPrecision(0)
 	outLayer.CreateField( colorDefn )
 
@@ -310,17 +311,18 @@ def main(argv):
 		if files.endswith(".shp") and files.find('-polygon') != -1:
 			polygonfile = path + "/" + files
 			# apply a projection so gdalwarp doesnt complain
-			os.system("cp " + dir_base_name + ".prj " + path + "/" + files[:files.find(".shp")] + ".prj")
-			extractedfile = path + "/" + files[:files.find(".shp")] + "-extracted.tif"
+			polygonfilename = files[:files.find(".shp")]
+			os.system("cp " + dir_base_name + ".prj " + path + "/" + polygonfilename + ".prj")
+			extractedfile = path + "/" + polygonfilename + "-extracted.tif"
 			# extract bitmap from original
-			command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of GTiff " + comparativegdal + " " + extractedfile
+			command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of GTiff " + inputfile + " " + extractedfile
 			logfile.write(command + "\n")
-			print command
+			# print command
 			os.system(command)
 			# calculate color
 			# shrink to 1x1 and find value
 			pixelvalue = subprocess.Popen(["convert", "-quiet", extractedfile, "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
-			pattern = re.compile(r"0,0: \(([0-9]*),([0-9]*),([0-9]*),[0-9]*.*")
+			pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
 			values = pattern.findall(pixelvalue)
 			if len(values) > 0:
 				red = int(values[0][0])
@@ -344,6 +346,10 @@ def main(argv):
 					circle_data = circleDetect(extractedfile)
 					# add to array
 					polygonfiles.append([polygonfile, nearestcolorindex, circle_data])
+				else:
+					logfile.write("Ignored (paper color): " + polygonfilename + "\n")
+			else:
+				logfile.write("Ignored (regex match error): " + polygonfilename + "\n")
 
 	for files in polygonfiles:
 		# 3 open the input data source and get the layer
@@ -407,7 +413,6 @@ def main(argv):
 	os.system("rm " + dir_base_name + "-tmp-*.shx")
 	os.system("rm " + dir_base_name + "-tmp-*.prj")
 	os.system("rm " + dir_base_name + "-tmp*.tif")
-	os.system("rm " + dir_base_name + "-comparative*")
 	os.system("rm " + dir_base_name + ".*")
 
 	endtime = datetime.datetime.now()

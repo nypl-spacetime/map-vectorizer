@@ -3,17 +3,19 @@ library(alphahull)
 library(igraph)
 library(shapefiles)
 args <- commandArgs(trailingOnly = TRUE)
-path = args[1]
+filepath = args[1]
 layer = args[2]
 finalout = args[3]
-myPolygons  = readOGR(path,layer=layer)
-alpha=1.6
+directory = args[4]
+polysubset = as.numeric(args[5])
+myPolygons  = readOGR(filepath,layer=layer)
+alpha=2 #1.6
 numsample=1000
 minarea=20
 maxarea=3000
 num = length(myPolygons)
 poly.list = vector('list')
-logfile <- file(paste(finalout, "-rlog.txt", sep=""), "a") # log file
+logfile <- file(paste(directory,"/r-log.txt", sep=""), "a") # log file
 for (i in 1: num) {
 	poly = myPolygons@polygons[[i]]
 	if (poly@area > minarea && poly@area < maxarea) {
@@ -36,9 +38,17 @@ for (i in 1: num) {
 			if ( class(x.as)=="ashape" ) {
 				x.asg = graph.edgelist(cbind(as.character(x.as$edges[, "ind1"]), as.character(x.as$edges[, "ind2"])), directed = FALSE)
 				error = 0
+				# try to fix circularity
 				if (error == 0 && any(degree(x.asg) != 2)) {
-					# try to fix circularity
 					x.asg <- delete.vertices(x.asg, which(degree(x.asg) == 1))
+				}
+				# try to fix multiple circles (when shape has big holes inside)
+				if (error == 0 && clusters(x.asg)$no > 1) {
+					# get the components
+					components = decompose.graph(x.asg, min.vertices = 3, max.comps = 1)
+					# we are assuming the FIRST cluster is the LARGEST (external container)
+					x.asg = components[[1]]
+					# cat(poly@ID, ": Graph composed of more than one circle", "\n")
 				}
 				if (error == 0 && any(degree(x.asg) != 2)) {
 					# cat(poly@ID, ": Graph not circular", "\n")
@@ -47,10 +57,6 @@ for (i in 1: num) {
 				if (!is.connected(x.asg)) {
 					# cat(poly@ID, ": Graph not connected", "\n")
 					error = 1
-				}
-				if (error == 0 && clusters(x.asg)$no > 1) {
-					# cat(poly@ID, ": Graph composed of more than one circle", "\n")
-					error = 3
 				}
 				if (error == 0) {
 					# print("Added new polygon")
@@ -71,15 +77,15 @@ for (i in 1: num) {
 					# finished simplifying
 					ps = Polygons(list(p),1)
 					sps = SpatialPolygons(list(ps), , myPolygons@proj4string)
-					data = data.frame(DN=i) # the polygon ID
+					data = data.frame(DN=(((polysubset-1) * 50000) + i)) # the polygon ID
 					output = SpatialPolygonsDataFrame(sps, data)
-					writeOGR(output, paste(finalout, "-", i, "-polygon.shp", sep=""), layer, driver="ESRI Shapefile")
+					writeOGR(output, paste(finalout, (((polysubset-1) * 50000) + i), "-polygon.shp", sep=""), layer, driver="ESRI Shapefile")
 				}
 			}
 			attempts = attempts + 1
 		}
 		if (error > 0) {
-			writeLines(paste(i," could not be written: ", error, sep=""), logfile)
+			writeLines(paste((((polysubset-1) * 50000) + i)," could not be written: ", error, sep=""), logfile)
 		}
 	}
 }
