@@ -15,7 +15,7 @@ currentchunk = 0
 totalsubsets = 0
 # colors sh/could be an external config file
 basecolors = [
-	[216,213,204] # paper
+	[207,204,190] # paper
 	,[199,179,173] # pink
 	,[179,155,157] # dark red
 	,[149,156,141] # green
@@ -99,7 +99,7 @@ def processfile(inputfile, basedir):
 	currentchunk = 0
 	totalsubsets = 0
 
-	print "Input file: " + inputfile
+	print "\n\nProcessing file: " + inputfile
 	# right now assuming vectorizer, simplifier and input are in the same folder
 	fullpath = os.path.abspath(__file__)
 
