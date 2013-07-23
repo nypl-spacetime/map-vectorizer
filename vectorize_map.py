@@ -15,10 +15,11 @@ currentchunk = 0
 totalsubsets = 0
 # colors sh/could be an external config file
 basecolors = [
-	[207,204,190] # paper
+	[206,202,185] # paper
 	,[199,179,173] # pink
 	,[179,155,157] # dark red
 	,[149,156,141] # green
+	,[199,195,163] # light yellow
 	,[195,189,154] # yellow
 	,[255,225,40] # bright yellow
 	,[137,174,163] # greenish blue
@@ -88,6 +89,12 @@ def main(argv):
 	print "Operation took " + str(deltatime.seconds) + " seconds"
 
 def processfile(inputfile, basedir):
+	#
+	# NOTE
+	#
+	# This still needs a lot of work for when dealing with subfolders and such.
+	# Best case is image file is located right next to vectorizer_map.py
+	#
 	global tempgdalfile
 	global instructions
 	global defaultgimp
@@ -104,6 +111,7 @@ def processfile(inputfile, basedir):
 	fullpath = os.path.abspath(__file__)
 
 	base_name = inputfile[:inputfile.find(".tif")]
+	base_name = base_name[base_name.rfind("/")+1:]
 
 	# create a folder to store all this
 	if basedir != '':
