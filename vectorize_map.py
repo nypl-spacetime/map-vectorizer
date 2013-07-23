@@ -6,30 +6,33 @@ from cv2 import cv
 import os
 import numpy as np
 
+tempgdalfile = ''
+instructions = 'vectorize_map.py <input file or dir>'
+defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
+gimp_path = defaultgimp
+chunksize = 50000 # how to split the mega polygon file
+currentchunk = 0
+totalsubsets = 0
+# colors sh/could be an external config file
+basecolors = [
+	[216,213,204] # paper
+	,[199,179,173] # pink
+	,[179,155,157] # dark red
+	,[149,156,141] # green
+	,[195,189,154] # yellow
+	,[255,225,40] # bright yellow
+	,[137,174,163] # greenish blue
+	,[187,194,192] # light blue
+	,[161,175,190] # "navy" blue
+]
+starttime = 0
+
 def main(argv):
-	inputfile = ''
-	tempgdalfile = ''
-	instructions = 'vectorize_map.py <inputfile>'
-	defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
-	chunksize = 50000
-	currentchunk = 0
-	totalsubsets = 0
-	basecolors = [
-		[216,213,204] # paper
 
-		,[253,217,193] # perris pink
-		,[216,216,138] # perris green
-		,[255,254,193] # perris yellow
-
-		,[199,179,173] # pink
-		,[179,155,157] # dark red
-		,[149,156,141] # green
-		,[195,189,154] # yellow
-		,[255,225,40] # bright yellow
-		,[137,174,163] # greenish blue
-		,[187,194,192] # light blue
-		,[161,175,190] # "navy" blue
-	]
+	global instructions
+	global defaultgimp
+	global gimp_path
+	global starttime
 
 	try:
 		opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
@@ -40,7 +43,7 @@ def main(argv):
 		if opt == '-h':
 			print instructions
 			sys.exit()
-		elif opt in ("-i", "--ifile"):
+		elif opt in ("-i"):
 			inputfile = arg
 
 	if len(argv) == 1:
@@ -60,20 +63,59 @@ def main(argv):
 	print "By: Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs"
 	print ""
 
-	gimp_path = "" # raw_input("GIMP executable path [" + defaultgimp +  "]: ")
+	gimp_path = raw_input("GIMP executable path [" + defaultgimp +  "]: ")
 
 	if gimp_path == '':
 		gimp_path = defaultgimp
 
 	starttime = datetime.datetime.now()
 
+	totalfiles = 0
+	# if input is a directory iterate through it
+	if os.path.isdir(inputfile) == True:
+		for ff in os.listdir(inputfile):
+			if ff.endswith(".tif"):
+				totalfiles = totalfiles + 1
+				processfile(ff, inputfile)
+	else:
+		# if input is a file, process it
+		processfile(inputfile, "")
+		totalfiles = 1
+
+	endtime = datetime.datetime.now()
+	deltatime = endtime-starttime
+	print "Processed  " + str(totalfiles) + " files\n"
+	print "Operation took " + str(deltatime.seconds) + " seconds"
+
+def processfile(inputfile, basedir):
+	global tempgdalfile
+	global instructions
+	global defaultgimp
+	global gimp_path
+	global chunksize
+	global currentchunk
+	global totalsubsets
+
+	currentchunk = 0
+	totalsubsets = 0
+
+	print "Input file: " + inputfile
+	# right now assuming vectorizer, simplifier and input are in the same folder
 	fullpath = os.path.abspath(__file__)
+
 	base_name = inputfile[:inputfile.find(".tif")]
 
 	# create a folder to store all this
-	directory = base_name 
+	if basedir != '':
+		directory = basedir + '/' + base_name
+		inputfile = basedir + '/' + inputfile
+	else:
+		directory = base_name
+
 	if not os.path.exists(directory):
 		os.makedirs(directory)
+
+	path = fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
 
 	# GIMP processing
 	dir_base_name = directory + "/" + base_name
@@ -255,8 +297,6 @@ def main(argv):
 	print "Polygonizing (simplify):"
 	print "------------------------"
 
-	path = fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
-
 	# First simplify each temporary shapefile
 	currentsubset = 1
 	while currentsubset <= totalsubsets:
@@ -415,13 +455,8 @@ def main(argv):
 	os.system("rm " + dir_base_name + "-tmp*.tif")
 	os.system("rm " + dir_base_name + ".*")
 
-	endtime = datetime.datetime.now()
-	deltatime = endtime-starttime
-
 	# close log file
 	logfile.close()
-
-	print "Operation took " + str(deltatime.seconds) + " seconds"
 
 def circleDetect(inputfile):
 	max_dist = 20 # distance between circles to consider it an empty circle
