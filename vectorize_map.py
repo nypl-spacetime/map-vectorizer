@@ -337,19 +337,19 @@ def processfile(inputfile, basedir):
 
 	# new field definitions for this shapefile
 	# color definition
-	colorDefn = ogr.FieldDefn("Color", ogr.OFTString)
+	colorDefn = ogr.FieldDefn("Color", ogr.OFTInteger)
 	colorDefn.SetWidth(2)
 	colorDefn.SetPrecision(0)
 	outLayer.CreateField( colorDefn )
 
 	# dot count definition
-	dotCountDefn = ogr.FieldDefn("Dot Count", ogr.OFTString)
+	dotCountDefn = ogr.FieldDefn("Dot Count", ogr.OFTInteger)
 	dotCountDefn.SetWidth(2)
 	dotCountDefn.SetPrecision(0)
 	outLayer.CreateField( dotCountDefn )
 
 	# dot type definition
-	dotTypeDefn = ogr.FieldDefn("Dot Type", ogr.OFTString)
+	dotTypeDefn = ogr.FieldDefn("Dot Type", ogr.OFTInteger)
 	dotTypeDefn.SetWidth(1)
 	dotTypeDefn.SetPrecision(0)
 	outLayer.CreateField( dotTypeDefn )
