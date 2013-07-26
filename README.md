@@ -9,7 +9,7 @@ NOTE: A proper `README` and instructions will be created. For now this is a list
 
 ## Like OCR for maps
 
-This project aims to automate a process that so far has been a manual task: polygon and metadata extraction from geometric maps such as [insurance atlases](atlas) from the 19th and early 20th centuries. In [this page](page) you can get an idea of the polygons we try to extract. View this [example map layer] to get an idea of what those atlases look like when geo-rectified and placed on Open Street Map.
+This project aims to automate a process that so far has been a manual task: polygon and metadata extraction from geometric maps such as [insurance atlases](atlas) from the 19th and early 20th centuries. In [this page](page) you can get an idea of the polygons we try to extract. View this [example map layer] to get an idea of what those atlases look like when geo-rectified and placed on Open Street Map. The New York Public Library has **tens of thousands** of these sheets. There is no way we can extract data manually in a reasonable amount of time. Just so you get an idea, 120,000 polygons and their respective metadata has taken an army of volunteers and NYPL staff **three years to produce** (this is for just two of the hundreds of atlases available at NYPL). The same process **will now take a day** with very good results for polygons and some metadata.
 
 The goal is to extract the following data (✔ = mostly solved so far, ✢ = in process):
 
