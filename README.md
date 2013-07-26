@@ -11,15 +11,15 @@ NOTE: A proper `README` and instructions will be created. For now this is a list
 
 This project aims to automate a process that so far has been a manual task: polygon and metadata extraction from geometric maps such as (insurance atlases)[atlas] from the 19th and early 20th centuries. In (this page)[page] you can get an idea of the polygons we try to extract. View this [example map layer] to get an idea of what those atlases look like when geo-rectified and placed on Open Street Map.
 
-The goal is to extract the following data (✔ = mostly solved so far, ○ = in process):
+The goal is to extract the following data (✔ = mostly solved so far, ✢ = in process):
 
- ✔ shape
- ✔ color
- ○ dot presence
- ○ dot count
- ○ dot type (full vs outline)
- presence of skylights
- numbers if any (not optimistic about this one but maybe you know a way)
+* ✔ shape
+* ✔ color
+* ✢ dot presence
+* ✢ dot count
+* ✢ dot type (full vs outline)
+* presence of skylights
+* numbers if any (not optimistic about this one but maybe you know a way)
 
 ## Dependencies
 
