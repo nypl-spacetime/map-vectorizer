@@ -3,9 +3,23 @@ Teh NYPL Labs Map Vectorizor
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
 
-A open-source map vectorizer. Provided **as is** by NYPL Labs. View this [example map layer] to get an idea of what types of maps this works best with. Project based on a workflow suggested by Michael Resig.
+A open-source map vectorizer. Provided **as is** by NYPL Labs. Project based on a workflow suggested by Michael Resig.
 
 NOTE: A proper `README` and instructions will be created. For now this is a list of requirements to get the project running.
+
+## Like OCR for maps
+
+This project aims to automate a process that so far has been a manual task: polygon and metadata extraction from geometric maps such as (insurance atlases)[atlas] from the 19th and early 20th centuries. In (this page)[page] you can get an idea of the polygons we try to extract. View this [example map layer] to get an idea of what those atlases look like when geo-rectified and placed on Open Street Map.
+
+The goal is to extract the following data (checked are those which are mostly solved so far):
+
+[x] shape
+[x] color
+[] dot presence
+[] dot count
+[] dot type (full vs outline)
+[] presence of skylights
+[] numbers if any (not optimistic about this one but maybe you know a way)
 
 ## Dependencies
 
@@ -47,3 +61,5 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 [GIMP]: http://www.gimp.org/
 [GDAL Tools]: http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries
 [example map layer]: http://maps.nypl.org/warper/layers/859
+[atlas]: http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24
+[page]: http://digitalcollections.nypl.org/items/510d47e0-c7cc-a3d9-e040-e00a18064a99
