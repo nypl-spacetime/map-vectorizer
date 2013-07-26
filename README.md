@@ -3,7 +3,7 @@ Teh NYPL Labs Map Vectorizor
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
 
-A open-source map vectorizer. Provided **as-is** by NYPL Labs. View this [example map layer] to get an idea of what types of maps this works best with.
+A open-source map vectorizer. Provided **as is** by NYPL Labs. View this [example map layer] to get an idea of what types of maps this works best with.
 
 NOTE: A proper `README` and instructions will be created. For now this is a list of requirements to get the project running.
 
@@ -34,7 +34,7 @@ And finally:
 `./vectorize_map.py test.tif`
 5. Accept the GIMP folder location or input a different one and press ENTER.
 
-This should take about 40 seconds to process. **If it takes less there might be an error** (or your machine rulez). Take a look at the console output to find the possible culprit.
+This should take about 70 seconds to process. **If it takes less there might be an error** (or your machine rulez). Take a look at the console output to find the possible culprit.
 
 If it works, you will see a `test` folder with a `test-traced` set of files (`.shp`, `.dbf`, `.prj` and `.shx`) and two log files.
 
