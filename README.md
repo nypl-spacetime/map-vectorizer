@@ -72,3 +72,4 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 [example map layer]: http://maps.nypl.org/warper/layers/859
 [atlas]: http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24
 [page]: http://digitalcollections.nypl.org/items/510d47e0-c7cc-a3d9-e040-e00a18064a99
+[QGIS]: http://qgis.org/
