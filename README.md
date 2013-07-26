@@ -22,13 +22,13 @@ The goal is to extract the following data (✔ = mostly solved so far, ✢ = in 
 * numbers if any (not optimistic about this one but maybe you know a way)
 
 #### Example input
-![Example input map](https://github.com/NYPL/map-vectorizer/blob/master/example_input.png)
+![Example input map](https://raw.github.com/NYPL/map-vectorizer/master/example_input.png)
 
 #### Example output
-![The resulting shapefile output superimposed](https://github.com/NYPL/map-vectorizer/blob/master/example_output.png)
+![The resulting shapefile output superimposed](https://raw.github.com/NYPL/map-vectorizer/master/example_output.png)
 
 #### Extra feature detection
-![Extra feature detection for the polygon](https://github.com/NYPL/map-vectorizer/blob/master/feature_detection.png)
+![Extra feature detection for the polygon](https://raw.github.com/NYPL/map-vectorizer/master/feature_detection.png)
 
 ## Dependencies
 
