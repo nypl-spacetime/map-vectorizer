@@ -3,7 +3,7 @@ Teh NYPL Labs Map Vectorizor
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
 
-A open-source map vectorizer. Provided **as is** by NYPL Labs. View this [example map layer] to get an idea of what types of maps this works best with.
+A open-source map vectorizer. Provided **as is** by NYPL Labs. View this [example map layer] to get an idea of what types of maps this works best with. Project based on a workflow suggested by Michael Resig.
 
 NOTE: A proper `README` and instructions will be created. For now this is a list of requirements to get the project running.
 
