@@ -13,13 +13,13 @@ This project aims to automate a process that so far has been a manual task: poly
 
 The goal is to extract the following data (checked are those which are mostly solved so far):
 
-- [x] shape
-- [x] color
-- [] dot presence
-- [] dot count
-- [] dot type (full vs outline)
-- [] presence of skylights
-- [] numbers if any (not optimistic about this one but maybe you know a way)
+* [x] shape
+* [x] color
+* [] dot presence
+* [] dot count
+* [] dot type (full vs outline)
+* [] presence of skylights
+* [] numbers if any (not optimistic about this one but maybe you know a way)
 
 ## Dependencies
 
