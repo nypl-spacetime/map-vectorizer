@@ -1,4 +1,4 @@
-Teh NYPL Labs Map Vectorizor
+NYPL Labs map polygon and meature extractor
 ==============
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
@@ -9,7 +9,7 @@ NOTE: A proper `README` and instructions will be created. For now this is a list
 
 ## Like OCR for maps
 
-This project aims to automate a process that so far has been a manual task: polygon and metadata extraction from geometric maps such as [insurance atlases](atlas) from the 19th and early 20th centuries. In [this page](page) you can get an idea of the polygons we try to extract. View this [example map layer] to get an idea of what those atlases look like when geo-rectified and placed on Open Street Map. The New York Public Library has **tens of thousands** of these sheets. There is no way we can extract data manually in a reasonable amount of time. Just so you get an idea, 120,000 polygons and their respective metadata has taken an army of volunteers and NYPL staff **three years to produce** (this is for just two of the hundreds of atlases available at NYPL). The same process **will now take a day** with very good results for polygons and some metadata.
+This project aims to automate a process that so far has been a manual task: polygon and metadata extraction from geometric maps such as [insurance atlases](http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24) from the 19th and early 20th centuries. In [this page](http://digitalcollections.nypl.org/items/510d47e0-c7cc-a3d9-e040-e00a18064a99) you can get an idea of the polygons we try to extract. View this [example map layer] to get an idea of what those atlases look like when geo-rectified and placed on Open Street Map. The New York Public Library has **tens of thousands** of these sheets. There is no way we can extract data manually in a reasonable amount of time. Just so you get an idea, 120,000 polygons and their respective metadata has taken an army of volunteers and NYPL staff **three years to produce** (this is for just two of the hundreds of atlases available at NYPL). The same process **will now take a day** with very good results for polygons and some metadata.
 
 The goal is to extract the following data (✔ = mostly solved so far, ✢ = in process):
 
@@ -70,6 +70,4 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 [GIMP]: http://www.gimp.org/
 [GDAL Tools]: http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries
 [example map layer]: http://maps.nypl.org/warper/layers/859
-[atlas]: http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24
-[page]: http://digitalcollections.nypl.org/items/510d47e0-c7cc-a3d9-e040-e00a18064a99
 [QGIS]: http://qgis.org/
