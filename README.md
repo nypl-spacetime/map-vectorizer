@@ -1,5 +1,3 @@
-NYPL Labs 
----
 Map polygon and feature extractor
 ==============
 
