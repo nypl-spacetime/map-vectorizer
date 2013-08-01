@@ -1,4 +1,6 @@
-NYPL Labs map polygon and feature extractor
+NYPL Labs 
+
+Map polygon and feature extractor
 ==============
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
