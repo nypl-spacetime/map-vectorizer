@@ -1,4 +1,4 @@
-NYPL Labs map polygon and meature extractor
+NYPL Labs map polygon and feature extractor
 ==============
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
@@ -32,7 +32,7 @@ The goal is to extract the following data (✔ = mostly solved so far, ✢ = in 
 
 ## Dependencies
 
-*Teh Vectorizor* needs a few things to be installed in your system in order to work properly. So far it has been **tested on Mac OS X Lion** so these instructions apply to that configuration only. I am sure you will be able to adapt it to your current configuration.
+A few things to be installed in your system in order to work properly. So far it has been **tested on Mac OS X Lion** so these instructions apply to that configuration only. I am sure you will be able to adapt it to your current configuration.
 
 * [Python] with [OpenCV]
 * [ImageMagick]
