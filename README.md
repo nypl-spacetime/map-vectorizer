@@ -66,6 +66,12 @@ This should take about 70 seconds to process. **If it takes less there might be 
 
 If it works, you will see a `test` folder with a `test-traced` set of files (`.shp`, `.dbf`, `.prj` and `.shx`) and two log files.
 
+## Acknowledgements
+
+* Michael Resig
+* Chris Garrard for his [sample code to assemble and disassemble shapefiles](http://cosmicproject.org/OGR/cris_example_write.html)
+* Barry Rowlingson for his [tutorial on converting alpha shapes to polygons](http://rpubs.com/geospacedman/alphasimple)
+
 [@mgiraldo]: https://twitter.com/mgiraldo
 [@nypl_labs]: https://twitter.com/nypl_labs
 [Python]: http://www.python.org/
