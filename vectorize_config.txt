@@ -1,8 +1,9 @@
-208,204,192,paper
+190,184,168,paper
 194,175,166,red
+191,172,167,red (light)
+185,172,163,red (darker)
 180,185,163,green
 178,179,157,green (darker)
 207,202,182,yellow (light)
 197,193,157,yellow (dark)
-185,172,163,red (darker)
-190,192,182, blue
+178,181,172, blue
