@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob
+import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob, csv
 
 import cv2, sys
 from cv2 import cv
@@ -33,6 +33,7 @@ def main(argv):
 	global instructions
 	global defaultgimp
 	global gimp_path
+	global basecolors
 	global starttime
 
 	try:
@@ -68,6 +69,19 @@ def main(argv):
 
 	if gimp_path == '':
 		gimp_path = defaultgimp
+
+	# test for config file
+	# TODO: integer checking
+	# FIRST LINE SHOULD ALWAYS BE PAPER COLOR
+	config_file = "vectorize_config.txt"
+	if os.path.isfile(config_file):
+		tempcolors = []
+		with open(config_file, 'r') as configcsv:
+			configcolors = csv.reader(configcsv, delimiter=',')
+			for row in configcolors:
+				tempcolors.append([int(row[0]), int(row[1]), int(row[2])])
+			if len(tempcolors) > 2:
+				basecolors = tempcolors
 
 	starttime = datetime.datetime.now()
 
