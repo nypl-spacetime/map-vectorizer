@@ -1,4 +1,4 @@
--50,95,145,255, brightness-contrast-thresholdblack-thresholdwhite
+-50,95,160,255, brightness-contrast-thresholdblack-thresholdwhite
 205,200,186,paper
 194,175,170,red
 191,172,167,red (light)
