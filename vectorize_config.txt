@@ -1,5 +1,6 @@
-190,184,168,paper
-194,175,166,red
+-50,95,145,255, brightness-contrast-thresholdblack-thresholdwhite
+205,200,186,paper
+194,175,170,red
 191,172,167,red (light)
 185,172,163,red (darker)
 180,185,163,green

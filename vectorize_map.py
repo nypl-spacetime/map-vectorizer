@@ -26,6 +26,10 @@ basecolors = [
 	,[187,194,192] # light blue
 	,[161,175,190] # "navy" blue
 ]
+brightness = -50
+contrast = 95
+thresholdblack = 145
+thresholdwhite = 255
 starttime = 0
 
 def main(argv):
@@ -35,6 +39,10 @@ def main(argv):
 	global gimp_path
 	global basecolors
 	global starttime
+	global brightness
+	global contrast
+	global thresholdblack
+	global thresholdwhite
 
 	try:
 		opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
@@ -76,10 +84,19 @@ def main(argv):
 	config_file = "vectorize_config.txt"
 	if os.path.isfile(config_file):
 		tempcolors = []
+		index = 0
 		with open(config_file, 'r') as configcsv:
-			configcolors = csv.reader(configcsv, delimiter=',')
-			for row in configcolors:
-				tempcolors.append([int(row[0]), int(row[1]), int(row[2])])
+			configdata = csv.reader(configcsv, delimiter=',')
+			for row in configdata:
+				if index > 0:
+					tempcolors.append([int(row[0]), int(row[1]), int(row[2])])
+				else:
+					# brightness/contrast/threshold values
+					brightness = int(row[0])
+					contrast = int(row[1])
+					thresholdblack = int(row[2])
+					thresholdwhite = int(row[3])
+				index = index + 1
 			if len(tempcolors) > 2:
 				basecolors = tempcolors
 
@@ -153,7 +170,11 @@ def processfile(inputfile, basedir):
 	print "---------------"
 	print inputfile + " into threshold file: " + thresholdfile
 
-	command = gimp_path + ' -i -b \'(nypl-create-threshold "' + inputfile + '" "' + thresholdfile + '")\' -b \'(gimp-quit 0)\''
+	contraststring = '(gimp-brightness-contrast drawable ' + str(brightness) + ' ' + str(contrast) + ')'
+	thresholdstring = '(gimp-threshold drawable ' + str(thresholdblack) + ' ' + str(thresholdwhite) + ')'
+	gimpcommand = '(let* ((image (car (file-tiff-load RUN-NONINTERACTIVE "' + inputfile + '" "' + inputfile + '"))) (drawable (car (gimp-image-get-layer-by-name image "Background")))) (gimp-selection-none image) ' + contraststring + ' ' + thresholdstring + ' (gimp-file-save RUN-NONINTERACTIVE image drawable "' + thresholdfile + '" "' + thresholdfile + '") (gimp-image-delete image))'
+
+	command = gimp_path + ' -i -b \'' + gimpcommand + '\' -b \'(gimp-quit 0)\''
 	logfile.write(command + "\n")
 	# print command
 	os.system(command)
