@@ -30,7 +30,6 @@ brightness = -50
 contrast = 95
 thresholdblack = 145
 thresholdwhite = 255
-starttime = 0
 
 def main(argv):
 
@@ -38,7 +37,6 @@ def main(argv):
 	global defaultgimp
 	global gimp_path
 	global basecolors
-	global starttime
 	global brightness
 	global contrast
 	global thresholdblack
@@ -75,6 +73,8 @@ def main(argv):
 
 	gimp_path = raw_input("GIMP executable path [" + defaultgimp +  "]: ")
 
+	starttime = datetime.datetime.now()
+
 	if gimp_path == '':
 		gimp_path = defaultgimp
 
@@ -100,7 +100,6 @@ def main(argv):
 			if len(tempcolors) > 2:
 				basecolors = tempcolors
 
-	starttime = datetime.datetime.now()
 
 	totalfiles = 0
 	# if input is a directory iterate through it
