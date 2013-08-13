@@ -587,19 +587,21 @@ def cvFeatureDetect(inputfile):
 	score_threshold = 0.954 # certainty there IS a cross
 
 	cross1 = cv2.imread("cross1.jpg")
-	graycross1 = cv2.cvtColor(cross1,cv.CV_RGB2GRAY)
-	match1 = cv2.matchTemplate(gray, graycross1, cv2.TM_CCORR_NORMED)
-	min_score, max_score, (min_x, min_y), (max_x, max_y) = cv2.minMaxLoc(match1)
 
 	cross_count = 0
 	cross_data = {}
 	
-	if (max_score >= score_threshold):
-		# only testing 1 cross for now
-		cross_count = 1
-		corner_topL = (max_x, max_y)
-		corner_botR = (corner_topL[0]+cross1.shape[1], corner_topL[1]+cross1.shape[0])
-		cross_data = {"top_left":corner_topL, "bottom_right":corner_botR, "score": max_score}
+	if cross1.shape[0] < im.shape[0] and cross1.shape[1] < im.shape[1]:
+		graycross1 = cv2.cvtColor(cross1,cv.CV_RGB2GRAY)
+		match1 = cv2.matchTemplate(gray, graycross1, cv2.TM_CCORR_NORMED)
+		min_score, max_score, (min_x, min_y), (max_x, max_y) = cv2.minMaxLoc(match1)
+
+		if (max_score >= score_threshold):
+			# only testing 1 cross for now
+			cross_count = 1
+			corner_topL = (max_x, max_y)
+			corner_botR = (corner_topL[0]+cross1.shape[1], corner_topL[1]+cross1.shape[0])
+			cross_data = {"top_left":corner_topL, "bottom_right":corner_botR, "score": max_score}
 
 	retval["cross_count"] = cross_count
 	retval["cross_data"] =cross_data
