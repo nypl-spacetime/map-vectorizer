@@ -468,17 +468,17 @@ def processfile(inputfile, basedir):
 			outFeature.SetGeometry(geom) #move it to the new feature
 
 			DN = inFeature.GetField('DN')
-			outFeature.SetField('DN', DN) #move it to the new feature
+			outFeature.SetField('DN', DN ) #move it to the new feature
 
-			outFeature.SetField('Color', files[1])
+			outFeature.SetField('Color', int(files[1]) )
 
-			outFeature.SetField('DotCount', files[2]["count"])
+			outFeature.SetField('DotCount', int(files[2]["count"]) )
 
-			outFeature.SetField('DotType', files[2]["is_outline"])
+			outFeature.SetField('DotType', int(files[2]["is_outline"]) )
 
-			outFeature.SetField('CrossCount', files[2]["cross_count"])
+			outFeature.SetField('CrossCount', int(files[2]["cross_count"]) )
 
-			outFeature.SetField('CrossData', str(files[2]["cross_data"]))
+			outFeature.SetField('CrossData', str(files[2]["cross_data"]) )
 
 			# outFeature.SetField('circle_count', files[2]["circle_count"])
 			# outFeature.SetField('circle_type', files[2]["is_outline"])
