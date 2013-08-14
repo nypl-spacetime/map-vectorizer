@@ -161,6 +161,9 @@ def processfile(inputfile, basedir):
 	# create a log file
 	logfile = open(directory + "/py-log.txt", "w")
 
+	logfile.write("Log file for " + inputfile + " with colors:\n\n")
+	logfile.write(str(basecolors) + "\n\n")
+
 	thresholdfile = dir_base_name + "-threshold-tmp.tif"
 	comparativefile = dir_base_name + "-comparative-tmp.tif"
 
