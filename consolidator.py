@@ -26,16 +26,27 @@ def main(argv):
 	outLayer.CreateField( colorDefn )
 
 	# dot count definition
-	dotCountDefn = ogr.FieldDefn("Dot Count", ogr.OFTInteger)
+	dotCountDefn = ogr.FieldDefn("DotCount", ogr.OFTInteger)
 	dotCountDefn.SetWidth(2)
 	dotCountDefn.SetPrecision(0)
 	outLayer.CreateField( dotCountDefn )
 
 	# dot type definition
-	dotTypeDefn = ogr.FieldDefn("Dot Type", ogr.OFTInteger)
+	dotTypeDefn = ogr.FieldDefn("DotType", ogr.OFTInteger)
 	dotTypeDefn.SetWidth(1)
 	dotTypeDefn.SetPrecision(0)
 	outLayer.CreateField( dotTypeDefn )
+
+	# cross count definition
+	crossCountDefn = ogr.FieldDefn("CrossCount", ogr.OFTInteger)
+	crossCountDefn.SetWidth(2)
+	crossCountDefn.SetPrecision(0)
+	outLayer.CreateField( crossCountDefn )
+
+	# cross data definition
+	crossDataDefn = ogr.FieldDefn("CrossData", ogr.OFTString)
+	crossDataDefn.SetWidth(255)
+	outLayer.CreateField( crossDataDefn )
 
 	for ff in os.listdir(inputfile):
 		if ff.endswith(".tif"):
@@ -79,11 +90,17 @@ def main(argv):
 				color = inFeature.GetField('Color')
 				outFeature.SetField('Color', color)
 
-				dc = inFeature.GetField('Dot Count')
-				outFeature.SetField('Dot Count', dc)
+				dc = inFeature.GetField('DotCount')
+				outFeature.SetField('DotCount', dc)
 
-				dt = inFeature.GetField('Dot Type')
-				outFeature.SetField('Dot Type', dt)
+				dt = inFeature.GetField('DotType')
+				outFeature.SetField('DotType', dt)
+
+				cc = inFeature.GetField('CrossCount')
+				outFeature.SetField('CrossCount', cc)
+
+				cd = inFeature.GetField('CrossData')
+				outFeature.SetField('CrossData', cd)
 
 				# add the feature to the output layer
 				outLayer.CreateFeature(outFeature)
