@@ -9,10 +9,10 @@ finalout = args[3]
 directory = args[4]
 polysubset = as.numeric(args[5])
 myPolygons  = readOGR(filepath,layer=layer)
-alpha=2 #1.6
+alpha=2 # 1.6 is another option, dependant on polygon areas that are being extracted (see minarea/maxarea below)
 numsample=1000
-minarea=20
-maxarea=3000
+minarea=20 # square meters (minimum polygon size to include)
+maxarea=3000 # square meters (maximum polygon size to include)
 num = length(myPolygons)
 poly.list = vector('list')
 logfile <- file(paste(directory,"/r-log.txt", sep=""), "a") # log file
