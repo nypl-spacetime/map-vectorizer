@@ -72,6 +72,13 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 * Chris Garrard for his [sample code to assemble and disassemble shapefiles](http://cosmicproject.org/OGR/cris_example_write.html)
 * Barry Rowlingson for his [tutorial on converting alpha shapes to polygons](http://rpubs.com/geospacedman/alphasimple)
 
+## Change log
+
+* Added a config file (rename `vectorize_config_default.txt` to `vectorize_config.txt`).
+* Added `consolidator.py` to assemble a set of shapefiles in a folder into a single file.
+* Added very rough OpenCV circle and cross detection (not working very well but it is a starting point).
+* Added GeoJSON output.
+
 [@mgiraldo]: https://twitter.com/mgiraldo
 [@nypl_labs]: https://twitter.com/nypl_labs
 [Python]: http://www.python.org/

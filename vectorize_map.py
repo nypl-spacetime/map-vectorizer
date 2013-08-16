@@ -505,6 +505,15 @@ def processfile(inputfile, basedir):
 	print "-------------------------------------"
 	os.system("cp " + dir_base_name + ".prj " + dir_base_name + "-traced.prj")
 
+	print ""
+	print "Creating GeoJSON output..."
+	print "--------------------------"
+	jsonfile = dir_base_name + '-traced.json'
+	command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
+	logfile.write(command + "\n")
+	# print command
+	os.system(command)
+
 	# Cleaning
 	print ""
 	print "Cleaning..."

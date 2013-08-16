@@ -117,6 +117,15 @@ def main(argv):
 	
 	outDS.Destroy() #flush out the last changes here
 
+	print ""
+	print "Creating GeoJSON output..."
+	print "--------------------------"
+	jsonfile = inputfile + '/' + inputfile + '.json'
+	command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
+	# print command
+	os.system(command)
+
+
 if __name__ == "__main__":
 	main(sys.argv[1:])
 
