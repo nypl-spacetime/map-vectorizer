@@ -1,9 +1,8 @@
 #!/usr/bin/python
 import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob, csv
 
-import cv2, sys
+import cv2
 from cv2 import cv
-import os
 import numpy as np
 
 tempgdalfile = ''
