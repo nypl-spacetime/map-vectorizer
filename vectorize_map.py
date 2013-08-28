@@ -7,7 +7,10 @@ import numpy as np
 
 tempgdalfile = ''
 instructions = 'vectorize_map.py <input file or dir>'
-defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
+if os.name == 'posix':
+    defaultgimp = subprocess.check_output(["which", "gimp"])[:-1]
+else:
+    defaultgimp = '/'
 gimp_path = defaultgimp
 chunksize = 50000 # how to split the mega polygon file
 currentchunk = 0
