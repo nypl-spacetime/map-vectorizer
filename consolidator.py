@@ -19,6 +19,12 @@ def main(argv):
 	outLayer = outDS.CreateLayer(inputfile, geom_type=ogr.wkbPolygon)
 
 	# new field definitions for this shapefile
+	# dn definition
+	dnDefn = ogr.FieldDefn("DN", ogr.OFTInteger)
+	dnDefn.SetWidth(9)
+	dnDefn.SetPrecision(0)
+	outLayer.CreateField( dnDefn )
+
 	# color definition
 	colorDefn = ogr.FieldDefn("Color", ogr.OFTInteger)
 	colorDefn.SetWidth(2)
@@ -85,7 +91,8 @@ def main(argv):
 				outFeature.SetGeometry(geom) #move it to the new feature
 
 				# set the attributes
-				outFeature.SetField('DN', totalpolygons) #move it to the new feature
+				DN = inFeature.GetField('DN')
+				outFeature.SetField('DN', DN ) #move it to the new feature
 
 				color = inFeature.GetField('Color')
 				outFeature.SetField('Color', color)
