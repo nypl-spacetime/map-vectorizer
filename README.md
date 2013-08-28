@@ -16,7 +16,7 @@ The New York Public Library has **hundreds of atlases** with **tens of thousands
 
 It **will now take a day** to produce a comparable number of polygons with some basic metadata.
 
-The goal is to extract the following data (✔ = mostly solved so far, ✢ = in process):
+The goal is to extract the following data (✔ = mostly solved so far, ✢ = in progress):
 
 * ✔ shape
 * ✔ color
