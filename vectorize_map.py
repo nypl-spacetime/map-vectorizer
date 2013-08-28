@@ -187,12 +187,6 @@ def processfile(inputfile, basedir):
 		# print command
 		os.system(command)
 
-	# print inputfile + " into comparative file: " + comparativefile
-	# command = gimp_path + ' -i -b \'(nypl-create-comparative "' + inputfile + '" "' + comparativefile + '")\' -b \'(gimp-quit 0)\''
-	# logfile.write(command + "\n")
-	# # print command
-	# os.system(command)
-
 	tempgdalfile = dir_base_name + "-tmp.tif"
 
 
@@ -240,20 +234,6 @@ def processfile(inputfile, basedir):
 		logfile.write(command + "\n")
 		# print command
 		os.system(command)
-
-	# # transform comparative
-	# comparativewsg = dir_base_name + "-comparative-wsg-tmp.tif"
-	# command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + comparativefile + ' ' + comparativewsg
-	# logfile.write(command + "\n")
-	# # print command
-	# os.system(command)
-
-	# print ""
-	# comparativegdal = dir_base_name + "-comparative-gdal-tmp.tif"
-	# command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + comparativewsg + ' ' + comparativegdal
-	# logfile.write(command + "\n")
-	# # print command
-	# os.system(command)
 
 	# QGIS POLYGONIZE
 
