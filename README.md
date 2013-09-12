@@ -4,7 +4,7 @@ Map polygon and feature extractor
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
 
-A open-source map vectorizer. Provided **as is** by NYPL Labs. Project based on a workflow suggested by Michael Resig.
+A open-source map vectorizer. Provided **as is** by [NYPL Labs](http://www.nypl.org/collections/labs). Project based on a workflow suggested by Michael Resig.
 
 ## Like OCR for maps
 
