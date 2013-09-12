@@ -42,13 +42,13 @@ A few things to be installed in your system in order to work properly. So far it
 * [Python] with [OpenCV]
 * [ImageMagick]
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
-* You'll need the following R packages. On OSX simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
+* You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
     * `rgdal`
     * `alphahull` 
     * `igraph` 
     * `shapefiles`  
 * [GIMP]
-* [GDAL Tools], on OSX try [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg) 
+* [GDAL Tools], on OS X try [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg) 
 * It is also a good idea to install [QGIS] to test your results
 
 ## First run
