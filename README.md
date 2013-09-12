@@ -42,7 +42,7 @@ A few things to be installed in your system in order to work properly. So far it
 * [Python] with [OpenCV]
 * [ImageMagick]
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
-* You'll need the following R packages. On OSX go to `Packages & Data`, choose your CRAN mirror region, then search for and install:
+* You'll need the following R packages. On OSX simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
     * `rgdal`
     * `alphahull` 
     * `igraph` 
