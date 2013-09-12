@@ -42,10 +42,10 @@ A few things to be installed in your system in order to work properly. So far it
 * [Python] with [OpenCV]
 * [ImageMagick]
 * [R] with these specific libraries:
-** `rgdal` 
-** `alphahull` 
-** `igraph` 
-** `shapefiles`  
+*** rgdal
+*** `alphahull` 
+*** `igraph` 
+*** `shapefiles`  
 *** Make sure R is in your PATH (so you can run it via command-line by typing `R`)
 * [GIMP]
 * [GDAL Tools], for Mac OS [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg) 
