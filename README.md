@@ -16,7 +16,7 @@ This project aims to automate the manual process of geographic polygon and attri
 
 Just so you get an idea, it took NYPL staff coordinating a small army of volunteers **three years to produce** 170,000 polygons with attributes (from just four of hundreds of atlases at NYPL).
 
-It now takes a period of time closer to **24 hours** to produce a comparable number of polygons with some basic metadata.
+It now takes a period of time closer to **24 hours** to generate a comparable number of polygons with some basic metadata.
 
 The goal is to extract the following data (✔ = mostly solved so far, ✢ = in progress):
 
