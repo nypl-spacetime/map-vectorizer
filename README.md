@@ -23,8 +23,8 @@ The goal is to extract the following data (✔ = mostly solved so far, ✢ = in 
 * ✢ dot presence
 * ✢ dot count
 * ✢ dot type (full vs outline)
-* presence of skylights
-* numbers if any (not optimistic about this one but maybe you know a way)
+* skylights
+* numbers (not optimistic, but maybe **one of you** knows how extract numbers from these images)
 
 #### Example input
 ![Example input map](https://raw.github.com/NYPL/map-vectorizer/master/example_input.png)
