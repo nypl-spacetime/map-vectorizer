@@ -6,8 +6,6 @@ Map polygon and feature extractor
 
 A open-source map vectorizer. Provided **as is** by NYPL Labs. Project based on a workflow suggested by Michael Resig.
 
-NOTE: A proper `README` and instructions will be created. For now this is a list of requirements to get the project running.
-
 ## Like OCR for maps
 
 This project aims to automate the manual process of geographic polygon and attribute data extraction from maps (i.e. georectified images) including those from [insurance atlases](http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24) published in the 19th and early 20th centuries. [Here is some background](http://www.nypl.org/blog/2012/06/13/nyc-historical-gis-project) on why we're doing this and [here is one of the maps](http://digitalcollections.nypl.org/items/510d47e0-c7cc-a3d9-e040-e00a18064a99) we're extracting polygons from. This [example map layer](http://maps.nypl.org/warper/layers/859) shows what these atlases look like once geo-rectified, i.e. geographically normalized.
