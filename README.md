@@ -58,7 +58,7 @@ These step by step instructions should work as-is. If not, **check all the above
 1. Add the `gimp-scripts/` folder to the GIMP Script-Fu folders in  `Preferences > Scripts`. Make sure to run GIMP at least once if you restart your machine (not sure why it behaves this way... I am trying to make the project non-GIMP-dependent so this won't become an issue)
 2. Add executable privileges to the main `vectorize_map.py` script like so: 
 `chmod +x vectorize_map.py`. 
-The other Python files are some test files we use and might be excluded in later commits but feel free to browse them.
+The other Python files are for testing purposes and might be excluded in later commits but feel free to browse them.
 3. Take note of the path where the GIMP executable is installed (another reason why I want to remove GIMP from the process).
 
 And finally:
