@@ -50,19 +50,20 @@ A few things to be installed in your system in order to work properly. So far it
     * `rgdal`
     * `alphahull` (you will need `tripack`, `sgeostat`, `splancs` as dependencies)
     * `igraph` 
-    * `shapefiles`  
+    * `shapefiles` 
+    * On the CLI (by typing `R` in a terminal window) you will know you have all the required dependencies if you can run this with no errors:
+
+```
+    library(rgdal)
+    library(alphahull)
+    library(igraph)
+    library(shapefiles)
+    quit() # this will quit R
+```
+
 * [GIMP]
 * [GDAL Tools], on OS X try [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg) 
 * It is also a good idea to install [QGIS] to test your results
-
-* Test R - on the CLI type `R`, you have all the required dependencies if you can run:
-
-  library(rgdal)
-  library(alphahull)
-  library(igraph)
-  library(shapefiles)
-
-
 
 ## First run
 
