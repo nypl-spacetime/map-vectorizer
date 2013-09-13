@@ -51,6 +51,15 @@ A few things to be installed in your system in order to work properly. So far it
 * [GDAL Tools], on OS X try [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg) 
 * It is also a good idea to install [QGIS] to test your results
 
+* Test R
+    * On the CLI type `R`, you have all the required dependencies if you can run:
+   library(rgdal)
+   library(alphahull)
+   library(igraph)
+   library(shapefiles)
+
+
+
 ## First run
 
 These step by step instructions should work as-is. If not, **check all the above are working** before submitting an issue.
