@@ -40,7 +40,11 @@ The goal is to extract the following data (✔ = mostly solved so far, ✢ = in 
 A few things to be installed in your system in order to work properly. So far it has been **tested on Mac OS X Lion** so these instructions apply to that configuration only. I am sure you will be able to adapt it to your current configuration.
 
 * [Python] with [OpenCV]
-* [ImageMagick]
+* [ImageMagick] with the `libtiff` delegate. If using `brew` this means:
+    * `brew install libtiff`
+    * `brew install imagemagick --with-libtiff`
+    * To verify all is well:
+    * `convert -list format` should display `TIFF` and `TIFF64` in the list 
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
 * You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
     * `rgdal`
