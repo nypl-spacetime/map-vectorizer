@@ -44,7 +44,7 @@ A few things to be installed in your system in order to work properly. So far it
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
 * You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
     * `rgdal`
-    * `alphahull` 
+    * `alphahull` (you will need `tripack`, `sgeostat`, `splancs` as dependencies)
     * `igraph` 
     * `shapefiles`  
 * [GIMP]
