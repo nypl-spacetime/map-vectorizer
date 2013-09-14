@@ -1,6 +1,6 @@
 #!/usr/bin/python
-
-import cv2, sys
+import cv2
+import sys
 from cv2 import cv
 import os
 import numpy as np
