@@ -1,49 +1,18 @@
 #!/usr/bin/python
-
-import re
 import sys
-import getopt 
-import subprocess
-import shlex
 import os
+import subprocess
+import numpy as np
+import cv2
+import re
+import getopt 
+import shlex
 import datetime
 import ogr
 import glob
 import csv
-import cv2
 from cv2 import cv
-import numpy as np
-
-tempgdalfile = ''
-instructions = 'vectorize_map.py <input file or dir>'
-if os.name == 'posix':
-	try:
-		defaultgimp = subprocess.check_output(["which", "gimp"])[:-1]
-	except subprocess.CalledProcessError:
-		defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
-else:
-	defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
-gimp_path = defaultgimp
-chunksize = 50000 # how to split the mega polygon file
-currentchunk = 0
-totalsubsets = 0
-# colors sh/could be an external config file
-basecolors = [
-	[206,202,185] # paper
-	,[199,179,173] # pink
-	,[179,155,157] # dark red
-	,[149,156,141] # green
-	,[199,195,163] # light yellow
-	,[195,189,154] # yellow
-	,[255,225,40] # bright yellow
-	,[137,174,163] # greenish blue	# os.system("rm " + outputgdal)
-	,[187,194,192] # light blue
-	,[161,175,190] # "navy" blue
-]
-brightness = -50
-contrast = 95
-thresholdblack = 145
-thresholdwhite = 255
+from config import *
 
 def main(argv):
         global instructions
@@ -56,10 +25,11 @@ def main(argv):
 	global thresholdwhite
 
 	try:
-		opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+            opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
 	except getopt.GetoptError:
-		print instructions
-		sys.exit(2)
+            print instructions
+            sys.exit(2)
+
 	for opt, arg in opts:
 		if opt == '-h':
 			print instructions
