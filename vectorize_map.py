@@ -474,10 +474,9 @@ def processfile(inputfile, basedir):
     jsonfile = dir_base_name + '-traced.json'
     command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
     logfile.write(command + "\n")
-    # print command
-    os.system(command)
+    os.system(command)  # print command
 
-    # Cleaning
+    # Clean up test directory. 
     print ""
     print "Cleaning..."
     print "-----------"
@@ -495,9 +494,9 @@ def processfile(inputfile, basedir):
     logfile.close()
 
 def detect_crosses(retval):
-    # NOW DETECT CROSSES
-    # code based on http://nbviewer.ipython.org/5861365
-
+    """DETECT CROSSES:
+       Code based on http://nbviewer.ipython.org/5861365
+    """
     score_threshold = 0.954 # certainty there IS a cross
     cross1 = cv2.imread("cross1.jpg")
     cross_count = 0
@@ -572,8 +571,7 @@ def cv_feature_detect(inputfile):
                 unique_circles.append([current_x, current_y])
             # cv2.circle(im,(circle[0],circle[1]),circle[2],(0,0,255), 1)
 
-    retval = {"count":len(unique_circles), "is_outline": outline_circles, "circles":circles}
-    return detect_crosses(retval)
+    detect_crosses({"count":len(unique_circles), "is_outline": outline_circles, "circles":circles})
 
 if __name__ == "__main__":
     main(sys.argv[1:])
