@@ -1,5 +1,8 @@
 #!/usr/bin/python
-import sys, subprocess, os, ogr
+import sys
+import subprocess
+import os 
+import ogr
 
 def main(argv):
 	inputfile = argv[0]
