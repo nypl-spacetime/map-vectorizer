@@ -22,9 +22,9 @@ def main(argv):
 def circleDetect(inputfile):
     max_dist = 20 # distance between circles to consider it an empty circle
 
-    im=cv2.imread(inputfile)
+    im = cv2.imread(inputfile)
 
-    gray=cv2.cvtColor(im,cv.CV_RGB2GRAY)
+    gray = cv2.cvtColor(im,cv.CV_RGB2GRAY)
 
     # blur = cv2.GaussianBlur(gray, (9,9), 2, 2)
 
