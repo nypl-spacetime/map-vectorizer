@@ -1,8 +1,9 @@
 #!/usr/bin/python
 
-import cv2, sys
-from cv2 import cv
+import cv2
+import sys
 import os
+from cv2 import cv
 import numpy as np
 
 def showme(pic):

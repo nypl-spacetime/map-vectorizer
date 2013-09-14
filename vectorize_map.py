@@ -1,6 +1,15 @@
 #!/usr/bin/python
-import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob, csv
 
+import re
+import sys
+import getopt 
+import subprocess
+import shlex
+import os
+import datetime
+import ogr
+import glob
+import csv
 import cv2
 from cv2 import cv
 import numpy as np
@@ -27,7 +36,7 @@ basecolors = [
 	,[199,195,163] # light yellow
 	,[195,189,154] # yellow
 	,[255,225,40] # bright yellow
-	,[137,174,163] # greenish blue
+	,[137,174,163] # greenish blue	# os.system("rm " + outputgdal)
 	,[187,194,192] # light blue
 	,[161,175,190] # "navy" blue
 ]
@@ -37,8 +46,7 @@ thresholdblack = 145
 thresholdwhite = 255
 
 def main(argv):
-
-	global instructions
+        global instructions
 	global defaultgimp
 	global gimp_path
 	global basecolors
@@ -428,7 +436,7 @@ def processfile(inputfile, basedir):
 				# only add if NOT paper
 				if nearestcolor != basecolors[0]:
 					# check for dots
-					circle_data = cvFeatureDetect(extractedfile)
+					circle_data = cv_feature_detect(extractedfile)
 					# add to array
 					polygonfiles.append([polygonfile, nearestcolorindex, circle_data])
 				else:
@@ -516,21 +524,39 @@ def processfile(inputfile, basedir):
 	# close log file
 	logfile.close()
 
-def cvFeatureDetect(inputfile):
+def detect_crosses(retval):
+	# NOW DETECT CROSSES
+	# code based on http://nbviewer.ipython.org/5861365
+	
+	score_threshold = 0.954 # certainty there IS a cross
+	cross1 = cv2.imread("cross1.jpg")
+	cross_count = 0
+	cross_data = {}
+
+	if cross1.shape[0] < im.shape[0] and cross1.shape[1] < im.shape[1]:
+		graycross1 = cv2.cvtColor(cross1,cv.CV_RGB2GRAY)
+		match1 = cv2.matchTemplate(gray, graycross1, cv2.TM_CCORR_NORMED)
+		min_score, max_score, (min_x, min_y), (max_x, max_y) = cv2.minMaxLoc(match1)
+
+		if (max_score >= score_threshold):
+			# only testing 1 cross for now
+			cross_count = 1
+			corner_top_left = (max_x, max_y)
+			corner_bottom_right = (corner_topL[0]+cross1.shape[1], corner_top_left[1]+cross1.shape[0])
+			cross_data = {"top_left":corner_top_left, "bottom_right":corner_bottom_right, "score": max_score}
+
+	retval["cross_count"] = cross_count
+	retval["cross_data"]  = cross_data
+	return retval
+
+def cv_feature_detect(inputfile):
 	max_dist = 20 # distance between circles to consider it an empty circle
-
 	retval = {}
-
-	im=cv2.imread(inputfile)
-
-	gray=cv2.cvtColor(im,cv.CV_RGB2GRAY)
-
+	im = cv2.imread(inputfile)
+	gray = cv2.cvtColor(im,cv.CV_RGB2GRAY)
 	circles = cv2.HoughCircles(gray, cv.CV_HOUGH_GRADIENT, 1, 2, np.array([]), 200, 8, 4, 8)
-
 	total_circles = 0
-
 	outline_circles = 1
-
 	unique_circles = []
 
 	if not (isinstance(circles, np.ndarray) and circles.shape[1] > 0):
@@ -577,33 +603,7 @@ def cvFeatureDetect(inputfile):
 			# cv2.circle(im,(circle[0],circle[1]),circle[2],(0,0,255), 1)
 
 	retval = {"count":len(unique_circles), "is_outline": outline_circles, "circles":circles}
-
-	# NOW DETECT CROSSES
-	# code based on http://nbviewer.ipython.org/5861365
-	
-	score_threshold = 0.954 # certainty there IS a cross
-
-	cross1 = cv2.imread("cross1.jpg")
-
-	cross_count = 0
-	cross_data = {}
-	
-	if cross1.shape[0] < im.shape[0] and cross1.shape[1] < im.shape[1]:
-		graycross1 = cv2.cvtColor(cross1,cv.CV_RGB2GRAY)
-		match1 = cv2.matchTemplate(gray, graycross1, cv2.TM_CCORR_NORMED)
-		min_score, max_score, (min_x, min_y), (max_x, max_y) = cv2.minMaxLoc(match1)
-
-		if (max_score >= score_threshold):
-			# only testing 1 cross for now
-			cross_count = 1
-			corner_topL = (max_x, max_y)
-			corner_botR = (corner_topL[0]+cross1.shape[1], corner_topL[1]+cross1.shape[0])
-			cross_data = {"top_left":corner_topL, "bottom_right":corner_botR, "score": max_score}
-
-	retval["cross_count"] = cross_count
-	retval["cross_data"] =cross_data
-
-	return retval
+        return detect_crosses(retval)
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
