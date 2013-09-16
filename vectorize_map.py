@@ -15,7 +15,6 @@ from cv2 import cv
 from config import *
 
 def setup_gimp():
-
     global gimp_path
     global basecolors
     global brightness
@@ -66,43 +65,6 @@ def process_files(inputfile):
     deltatime = endtime - starttime
     print "Processed  " + str(totalfiles) + " files\n"
     print "Operation took " + str(deltatime.seconds) + " seconds"
-
-def main(argv):
-
-    global instructions
-    global defaultgimp
-    global gimp_path
-    global basecolors
-    global brightness
-    global contrast
-    global thresholdblack
-    global thresholdwhite
-    global starttime
-
-    # Process CLI args
-    try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-    except getopt.GetoptError:
-        print instructions
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print instructions
-            sys.exit()
-        elif opt in ("-i"):
-            inputfile = arg
-
-    if len(argv) == 1:
-        inputfile = argv[0]
-
-    if inputfile == '':
-        print instructions
-        sys.exit(2)
-
-    print author_information
-
-    setup_gimp()
-    process_files(inputfile)
 
 def processfile(inputfile, basedir = ""):
 
@@ -304,7 +266,7 @@ def processfile(inputfile, basedir = ""):
     print "Produced " + str(totalsubsets) + " temporary shapefiles"
     print ""
 
-    #####
+    ##### @todo: move all R code to separate fns
 
     # R Simplification
 
@@ -585,6 +547,42 @@ def cvFeatureDetect(inputfile):
     retval["cross_data"] =cross_data
 
     return retval
+
+def main(argv):
+    global instructions
+    global defaultgimp
+    global gimp_path
+    global basecolors
+    global brightness
+    global contrast
+    global thresholdblack
+    global thresholdwhite
+    global starttime
+
+    # Process CLI args
+    try:
+        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+    except getopt.GetoptError:
+        print instructions
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print instructions
+            sys.exit()
+        elif opt in ("-i"):
+            inputfile = arg
+
+    if len(argv) == 1:
+        inputfile = argv[0]
+
+    if inputfile == '':
+        print instructions
+        sys.exit(2)
+
+    print author_information
+
+    setup_gimp()
+    process_files(inputfile)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
