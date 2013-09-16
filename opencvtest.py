@@ -1,6 +1,6 @@
 #!/usr/bin/python
-
-import cv2, sys
+import cv2
+import sys
 from cv2 import cv
 import os
 import numpy as np
@@ -19,7 +19,7 @@ def main(argv):
     stuff = cvFeatureDetect(inputfile)
 
     print stuff
-    
+
     circles = stuff["circles"]
 
     try:
@@ -96,7 +96,7 @@ def cvFeatureDetect(inputfile):
 
     # NOW DETECT CROSSES
     # code based on http://nbviewer.ipython.org/5861365
-    
+
     score_threshold = 0.954 # certainty there IS a cross
 
     cross1 = cv2.imread("cross1.jpg")
@@ -106,7 +106,7 @@ def cvFeatureDetect(inputfile):
 
     cross_count = 0
     cross_data = {}
-    
+
     if (max_score >= score_threshold):
         # only testing 1 cross for now
         cross_count = 1
