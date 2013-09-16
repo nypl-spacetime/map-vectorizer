@@ -1,47 +1,74 @@
 #!/usr/bin/python
+import re 
 import sys
-import os
-import subprocess
-import numpy as np
-import cv2
-import re
 import getopt
+import subprocess
 import shlex
+import os 
 import datetime
 import ogr
 import glob
 import csv
+import cv2
+import numpy as np
 from cv2 import cv
 from config import *
 
-def set_color_thresholds():
-    """Check for config file
-       @todo: integer checking
-       First line should always be paper color.
-    """
-    color_config = "vectorize_config_default.txt"
-    if os.path.isfile(color_config):
+def setup_gimp():
+
+    global gimp_path
+    global basecolors
+    global brightness
+    global contrast
+    global thresholdblack
+    global thresholdwhite
+    global starttime
+
+    gimp_path = raw_input("GIMP executable path [" + defaultgimp +  "]: ")
+    starttime = datetime.datetime.now()
+    config_file = "vectorize_config.txt"
+
+    if gimp_path == '':
+        gimp_path = defaultgimp
+
+    if os.path.isfile(config_file):
         tempcolors = []
         index = 0
-        with open(color_config, 'r') as configcsv:
+        with open(config_file, 'r') as configcsv:
             configdata = csv.reader(configcsv, delimiter=',')
             for row in configdata:
                 if index > 0:
                     tempcolors.append([int(row[0]), int(row[1]), int(row[2])])
                 else:
-                    """brightness/contrast/threshold values
-                       caution: here we are modifying globals.
-                    """
+                    # brightness/contrast/threshold values
                     brightness = int(row[0])
                     contrast = int(row[1])
                     thresholdblack = int(row[2])
                     thresholdwhite = int(row[3])
-                    index = index + 1
-                    return
-                if len(tempcolors) > 2:
-                    return tempcolors
+                index = index + 1
+            if len(tempcolors) > 2:
+                basecolors = tempcolors
+
+def process_files(inputfile):
+    totalfiles = 0
+    # If input is a directory iterate through it
+    if os.path.isdir(inputfile) == True:
+        for ff in os.listdir(inputfile):
+            if ff.endswith(".tif"):
+                totalfiles = totalfiles + 1
+                processfile(ff, inputfile)
+    else:
+        # if input is a file, process it
+        processfile(inputfile)
+        totalfiles = 1
+
+    endtime = datetime.datetime.now()
+    deltatime = endtime - starttime
+    print "Processed  " + str(totalfiles) + " files\n"
+    print "Operation took " + str(deltatime.seconds) + " seconds"
 
 def main(argv):
+
     global instructions
     global defaultgimp
     global gimp_path
@@ -50,13 +77,14 @@ def main(argv):
     global contrast
     global thresholdblack
     global thresholdwhite
+    global starttime
 
+    # Process CLI args
     try:
         opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
     except getopt.GetoptError:
         print instructions
         sys.exit(2)
-
     for opt, arg in opts:
         if opt == '-h':
             print instructions
@@ -73,55 +101,16 @@ def main(argv):
 
     print author_information
 
-    gimp_path = raw_input("GIMP executable path [" + defaultgimp +  "]: ")
-
-    starttime = datetime.datetime.now()
-
-    if gimp_path == '':
-        gimp_path = defaultgimp
-
-    config_file = "vectorize_config.txt"
-    if os.path.isfile(config_file):
-        tempcolors = []
-        index = 0
-        with open(config_file, 'r') as configcsv:
-            configdata = csv.reader(configcsv, delimiter=',')
-            for row in configdata:
-                if index > 0:
-                   tempcolors.append([int(row[0]), int(row[1]), int(row[2])])
-                else:
-                    # brightness/contrast/threshold values
-                    brightness = int(row[0])
-                    contrast = int(row[1])
-                    thresholdblack = int(row[2])
-                    thresholdwhite = int(row[3])
-                    index = index + 1
-                if len(tempcolors) > 2:
-                    basecolors = tempcolors
-                    
-    totalfiles = 0
-    # if input is a directory iterate through it
-    if os.path.isdir(inputfile) == True:
-        for ff in os.listdir(inputfile):
-            if ff.endswith(".tif"):
-                totalfiles = totalfiles + 1
-                processfile(ff, inputfile)
-    else:
-        # if input is a file, process it
-        processfile(inputfile)
-        totalfiles = 1
-
-    endtime = datetime.datetime.now()
-    deltatime = endtime-starttime
-    print "Processed  " + str(totalfiles) + " files\n"
-    print "Operation took " + str(deltatime.seconds) + " seconds"
+    setup_gimp()
+    process_files(inputfile)
 
 def processfile(inputfile, basedir = ""):
-    """NOTE:
 
-       This still needs a lot of work for when dealing with subfolders and such.
-       Best case is image file is located right next to vectorizer_map.py
+    """NOTE: This still needs a lot of work for when dealing 
+       with subfolders and such. 
+       Best case is image file is located in same dir as vectorizer_map.py
     """
+
     global tempgdalfile
     global instructions
     global defaultgimp
@@ -191,9 +180,7 @@ def processfile(inputfile, basedir = ""):
     # BETTER (SOME) ERROR HANDLING SHOULD BE DONE!!!!!
 
     # first get geotiff data from original
-
     geoText = subprocess.Popen(["gdalinfo", inputfile], stdout=subprocess.PIPE).communicate()[0]
-    ## import pdb;pdb.set_trace()
     pattern = re.compile(r"Upper Left\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*\n.*\n.*\nLower Right\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*")
     geoMatch = pattern.findall(geoText)
     # print pattern
@@ -213,7 +200,6 @@ def processfile(inputfile, basedir = ""):
 
     print "Applying to destination:"
     print "------------------------"
-
     # print outputgdal
     outputwsg = dir_base_name + "-wsg-tmp.tif"
     if (not os.path.isfile(outputwsg)):
@@ -231,6 +217,7 @@ def processfile(inputfile, basedir = ""):
         os.system(command)
 
     # QGIS POLYGONIZE
+
     print ""
     print "Polygonizing (coarse):"
     print "----------------------"
@@ -278,13 +265,13 @@ def processfile(inputfile, basedir = ""):
             if outDS is None:
                 print 'Could not create temp shapefile'
                 sys.exit(1)
-            out_layer = outDS.CreateLayer(base_name, geom_type=ogr.wkbPolygon)
+            outLayer = outDS.CreateLayer(base_name, geom_type=ogr.wkbPolygon)
 
             #create new field in the output shapefile
-            out_layer.CreateField(idFieldDefn)
+            outLayer.CreateField(idFieldDefn)
 
             # 6 get the FeatureDefn for the output layer
-            featureDefn = out_layer.GetLayerDefn()
+            featureDefn = outLayer.GetLayerDefn()
 
         # create a new feature
         outFeature = ogr.Feature(featureDefn)#using featureDefn created in step 6
@@ -294,11 +281,11 @@ def processfile(inputfile, basedir = ""):
         outFeature.SetGeometry(geom) #move it to the new feature
 
         # set the attributes
-        dn = inFeature.GetField('DN')
-        outFeature.SetField('DN', dn) #move it to the new feature
+        DN = inFeature.GetField('DN')
+        outFeature.SetField('DN', DN) #move it to the new feature
 
         # add the feature to the output layer
-        out_layer.CreateFeature(outFeature)
+        outLayer.CreateFeature(outFeature)
 
         # destroy the output feature
         outFeature.Destroy()
@@ -347,43 +334,43 @@ def processfile(inputfile, basedir = ""):
     if outDS is None:
         print 'Could not create final shapefile'
         sys.exit(1)
-    out_layer = outDS.CreateLayer(base_name, geom_type=ogr.wkbPolygon)
+    outLayer = outDS.CreateLayer(base_name, geom_type=ogr.wkbPolygon)
 
     #create new field in the output shapefile
-    out_layer.CreateField(idFieldDefn)
+    outLayer.CreateField(idFieldDefn)
 
     # 6 get the FeatureDefn for the output layer
-    featureDefn = out_layer.GetLayerDefn()
+    featureDefn = outLayer.GetLayerDefn()
 
     # new field definitions for this shapefile
     # color definition
     colorDefn = ogr.FieldDefn("Color", ogr.OFTInteger)
     colorDefn.SetWidth(2)
     colorDefn.SetPrecision(0)
-    out_layer.CreateField( colorDefn )
+    outLayer.CreateField( colorDefn )
 
     # dot count definition
     dotCountDefn = ogr.FieldDefn("DotCount", ogr.OFTInteger)
     dotCountDefn.SetWidth(2)
     dotCountDefn.SetPrecision(0)
-    out_layer.CreateField( dotCountDefn )
+    outLayer.CreateField( dotCountDefn )
 
     # dot type definition
     dotTypeDefn = ogr.FieldDefn("DotType", ogr.OFTInteger)
     dotTypeDefn.SetWidth(1)
     dotTypeDefn.SetPrecision(0)
-    out_layer.CreateField( dotTypeDefn )
+    outLayer.CreateField( dotTypeDefn )
 
     # cross count definition
     crossCountDefn = ogr.FieldDefn("CrossCount", ogr.OFTInteger)
     crossCountDefn.SetWidth(2)
     crossCountDefn.SetPrecision(0)
-    out_layer.CreateField( crossCountDefn )
+    outLayer.CreateField( crossCountDefn )
 
     # cross data definition
     crossDataDefn = ogr.FieldDefn("CrossData", ogr.OFTString)
     crossDataDefn.SetWidth(255)
-    out_layer.CreateField( crossDataDefn )
+    outLayer.CreateField( crossDataDefn )
 
     polygonfiles = []
     for files in os.listdir(path):
@@ -396,8 +383,10 @@ def processfile(inputfile, basedir = ""):
             # extract bitmap from original
             command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of GTiff " + inputfile + " " + extractedfile
             logfile.write(command + "\n")
+            # print command
             os.system(command)
-            # calculate color and shrink to 1x1 
+            # calculate color
+            # shrink to 1x1 and find value
             pixelvalue = subprocess.Popen(["convert", "-quiet", extractedfile, "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
             pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
             values = pattern.findall(pixelvalue)
@@ -420,7 +409,7 @@ def processfile(inputfile, basedir = ""):
                 # only add if NOT paper
                 if nearestcolor != basecolors[0]:
                     # check for dots
-                    circle_data = cv_feature_detect(extractedfile)
+                    circle_data = cvFeatureDetect(extractedfile)
                     # add to array
                     polygonfiles.append([polygonfile, nearestcolorindex, circle_data])
                 else:
@@ -428,46 +417,49 @@ def processfile(inputfile, basedir = ""):
             else:
                 logfile.write("Ignored (regex match error): " + polygonfilename + "\n")
 
-    # (3) open the input data source and get the layer
     for files in polygonfiles:
+        # 3 open the input data source and get the layer
         tempfile = files[0] #dir_base_name + '-tmp-' + str(currentsubset) + '-traced.shp'
-        in_ds = driver.Open(tempfile, 0) #shows cover at given points
-        if in_ds is None:
+        inDS = driver.Open(tempfile, 0) #shows cover at given points
+        if inDS is None:
             print 'Could not open temporary shapefile'
             break
+        inLayer = inDS.GetLayer()
 
-        in_layer = in_ds.GetLayer()
-        in_feature = in_layer.GetNextFeature()    
+        # 7 loop through the input features
+        inFeature = inLayer.GetNextFeature()
+        while inFeature:
+            # create a new feature
+            outFeature = ogr.Feature(featureDefn) #using featureDefn created in step 6
 
-        # (7) Loop through input features.
-        while in_feature:
-            # Create a new feature in out_feature
-            out_feature = ogr.Feature(featureDefn) # Using featureDefn created in step 6
-            geom = in_feature.GetGeometryRef() # Set the geometry
-            dn = in_feature.GetField('DN')
-            
-            # Move geometry to the new feature and set features
-            out_feature.SetGeometry(geom) 
-            out_feature.SetField('DN', dn) 
-            out_feature.SetField('Color', int(files[1]))
+            # set the geometry
+            geom = inFeature.GetGeometryRef()
+            outFeature.SetGeometry(geom) #move it to the new feature
 
-            # import pdb;pdb.set_trace()
-            out_feature.SetField('DotCount', int(files[2]["count"]))
-            out_feature.SetField('DotType', int(files[2]["is_outline"]))
-            out_feature.SetField('CrossCount', int(files[2]["cross_count"]))
-            out_feature.SetField('CrossData', str(files[2]["cross_data"]))
+            DN = inFeature.GetField('DN')
+            outFeature.SetField('DN', DN ) #move it to the new feature
 
-            # out_feature.SetField('circle_count', files[2]["circle_count"])
-            # out_feature.SetField('circle_type', files[2]["is_outline"])
+            outFeature.SetField('Color', int(files[1]) )
 
-            out_layer.CreateFeature(out_feature) # Add the feature to the output layer
+            outFeature.SetField('DotCount', int(files[2]["count"]) )
+
+            outFeature.SetField('DotType', int(files[2]["is_outline"]) )
+
+            outFeature.SetField('CrossCount', int(files[2]["cross_count"]) )
+
+            outFeature.SetField('CrossData', str(files[2]["cross_data"]) )
+
+            # outFeature.SetField('circle_count', files[2]["circle_count"])
+            # outFeature.SetField('circle_type', files[2]["is_outline"])
+            # add the feature to the output layer
+            outLayer.CreateFeature(outFeature)
 
             # destroy the output feature
-            out_feature.Destroy()
+            outFeature.Destroy()
 
             # destroy the input feature and get a new one
-            in_feature.Destroy()
-            in_feature = in_layer.GetNextFeature()
+            inFeature.Destroy()
+            inFeature = inLayer.GetNextFeature()
 
         # close the data sources
         inDS.Destroy()
@@ -485,9 +477,10 @@ def processfile(inputfile, basedir = ""):
     jsonfile = dir_base_name + '-traced.json'
     command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
     logfile.write(command + "\n")
-    os.system(command)  # print command
+    # print command
+    os.system(command)
 
-    # Clean up test directory. 
+    # Cleaning
     print ""
     print "Cleaning..."
     print "-----------"
@@ -504,29 +497,31 @@ def processfile(inputfile, basedir = ""):
     # close log file
     logfile.close()
 
-# def detect_crosses(imread_file, retval):
-#     """DETECT CROSSES:
-#        Code based on http://nbviewer.ipython.org/5861365
-    # """
-
-def cv_feature_detect(inputfile):
+def cvFeatureDetect(inputfile):
     max_dist = 20 # distance between circles to consider it an empty circle
+
     retval = {}
-    imread_file = cv2.imread(inputfile)
-    gray = cv2.cvtColor(imread_file, cv.CV_RGB2GRAY)
+
+    im=cv2.imread(inputfile)
+
+    gray=cv2.cvtColor(im,cv.CV_RGB2GRAY)
+
     circles = cv2.HoughCircles(gray, cv.CV_HOUGH_GRADIENT, 1, 2, np.array([]), 200, 8, 4, 8)
+
     total_circles = 0
+
     outline_circles = 1
+
     unique_circles = []
 
     if not (isinstance(circles, np.ndarray) and circles.shape[1] > 0):
-        retval = {"count": 0, "is_outline": 0, "circles": circles}
+        retval = {"count":0, "is_outline": 0, "circles":circles}
     else:
         total_circles = circles.shape[1]
 
     if total_circles == 1:
         # only one circle and it is filled
-        retval = {"count": total_circles, "is_outline": 0, "circles": circles}
+        retval = {"count":total_circles, "is_outline": 0, "circles":circles}
     else :
         # this is wrong... use for now
         outline_circles = 0
@@ -560,16 +555,21 @@ def cv_feature_detect(inputfile):
                     break
             if not is_inside:
                 unique_circles.append([current_x, current_y])
-    
-    retval = {"count": len(unique_circles), "is_outline": outline_circles, "circles": circles}
+            # cv2.circle(im,(circle[0],circle[1]),circle[2],(0,0,255), 1)
 
-    #Detect crosses
+    retval = {"count":len(unique_circles), "is_outline": outline_circles, "circles":circles}
+
+    # NOW DETECT CROSSES
+    # code based on http://nbviewer.ipython.org/5861365
+
     score_threshold = 0.954 # certainty there IS a cross
+
     cross1 = cv2.imread("cross1.jpg")
+
     cross_count = 0
     cross_data = {}
 
-    if cross1.shape[0] < imread_file.shape[0] and cross1.shape[1] < imread_file.shape[1]:
+    if cross1.shape[0] < im.shape[0] and cross1.shape[1] < im.shape[1]:
         graycross1 = cv2.cvtColor(cross1,cv.CV_RGB2GRAY)
         match1 = cv2.matchTemplate(gray, graycross1, cv2.TM_CCORR_NORMED)
         min_score, max_score, (min_x, min_y), (max_x, max_y) = cv2.minMaxLoc(match1)
@@ -577,13 +577,13 @@ def cv_feature_detect(inputfile):
         if (max_score >= score_threshold):
             # only testing 1 cross for now
             cross_count = 1
-            corner_top_left = (max_x, max_y)
-            corner_bottom_right = (corner_top_left[0] + cross1.shape[1], corner_top_left[1] + cross1.shape[0])
-            cross_data = {"top_left": corner_top_left, "bottom_right": corner_bottom_right, "score": max_score}
+            corner_topL = (max_x, max_y)
+            corner_botR = (corner_topL[0]+cross1.shape[1], corner_topL[1]+cross1.shape[0])
+            cross_data = {"top_left":corner_topL, "bottom_right":corner_botR, "score": max_score}
 
     retval["cross_count"] = cross_count
-    retval["cross_data"]  = cross_data
-    # import pdb;pdb.set_trace()
+    retval["cross_data"] =cross_data
+
     return retval
 
 if __name__ == "__main__":
