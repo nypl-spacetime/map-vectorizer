@@ -67,8 +67,8 @@ def process_files(inputfile):
     print "Processed  " + str(totalfiles) + " files\n"
     print "Operation took " + str(deltatime.seconds) + " seconds"
 
-def thresholdize(inputfile, base_name):
-    thresholdfile = base_name + "-threshold-tmp.tif"
+def thresholdize(inputfile, dir_base_name):
+    thresholdfile = dir_base_name + "-threshold-tmp.tif"
     print "\n\n"
     print "Thresholdizing:"
     print "---------------"
@@ -84,9 +84,9 @@ def thresholdize(inputfile, base_name):
         # print command
         os.system(command)
 
-    tempgdalfile = base_name + "-tmp.tif"
-    outputwsg = base_name + "-wsg-tmp.tif"
-    outputgdal = base_name + "-gdal-tmp.tif"
+    tempgdalfile = dir_base_name + "-tmp.tif"
+    outputwsg = dir_base_name + "-wsg-tmp.tif"
+    outputgdal = dir_base_name + "-gdal-tmp.tif"
 
     # first get geotiff data from original
     geoText = subprocess.Popen(["gdalinfo", inputfile], stdout=subprocess.PIPE).communicate()[0]
@@ -124,56 +124,17 @@ def thresholdize(inputfile, base_name):
         os.system(command)
     return outputgdal
 
-
-def processfile(inputfile, basedir = ""):
-
-    """NOTE: This still needs a lot of work for when dealing 
-       with subfolders and such. 
-       Best case is image file is located in same dir as vectorizer_map.py
-    """
-
-    global tempgdalfile
-    global instructions
-    global defaultgimp
-    global gimp_path
+def polygonize(dir_base_name):
     global chunksize
     global currentchunk
     global totalsubsets
+    global base_name
 
     currentchunk = 0
     totalsubsets = 0
 
-    print "\n\nProcessing file: " + inputfile
-    # right now assuming vectorizer, simplifier and input are in the same folder
-    fullpath = os.path.abspath(__file__)
-
-    base_name = inputfile[:inputfile.find(".tif")]
-    base_name = base_name[base_name.rfind("/")+1:]
-
-    # create a folder to store all this
-    if basedir != '':
-        directory = basedir + '/' + base_name
-        inputfile = basedir + '/' + inputfile
-    else:
-        directory = base_name
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    path = fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
-
-    # GIMP processing
-    dir_base_name = directory + "/" + base_name
-
-    # create a log file
-    # logfile = open(directory + "/py-log.txt", "w")
-    logging.basicConfig(filename=directory + "/py-log.txt",format='%(asctime)s %(message)s',level=logging.DEBUG)
-
-    logging.debug("Log file for " + inputfile + " with colors:\n\n")
-    logging.debug(str(basecolors) + "\n\n")
-
-    outputgdal = thresholdize(inputfile, dir_base_name)
-
+    base_name = dir_base_name[dir_base_name.find("/")+1:]
+    outputgdal = dir_base_name + "-gdal-tmp.tif"
     # QGIS POLYGONIZE
 
     print ""
@@ -262,7 +223,11 @@ def processfile(inputfile, basedir = ""):
     print "Produced " + str(totalsubsets) + " temporary shapefiles"
     print ""
 
-    ##### @todo: move all R code to separate fns
+def simplify(dir_base_name):
+    global totalsubsets
+    global directory
+    global base_name
+    global path
 
     # R Simplification
 
@@ -282,10 +247,29 @@ def processfile(inputfile, basedir = ""):
         os.system(command)
         currentsubset = currentsubset + 1
 
+def consolidate(inputfile, dir_base_name):
+    global base_name
+    global path
+
     # Now combine all subsets into a macroset
 
     # 4 create a new data source and layer
     fn = dir_base_name + '-traced.shp'
+
+    # 2 get the shapefile driver
+    driver = ogr.GetDriverByName('ESRI Shapefile')
+
+    # 3 open the input data source and get the layer
+    shapefile = dir_base_name + '.shp'
+    inDS = driver.Open(shapefile, 0) #shows cover at given points
+    if inDS is None:
+        print 'Could not open shapefile'
+        sys.exit(1)
+    inLayer = inDS.GetLayer()
+
+    # 5 get the FieldDefn's for the id and cover fields in the input shapefile
+    feature = inLayer.GetFeature(0)
+    idFieldDefn = feature.GetFieldDefnRef('DN')
 
     if os.path.exists(fn):driver.DeleteDataSource(fn)
     outDS = driver.CreateDataSource(fn)
@@ -429,11 +413,64 @@ def processfile(inputfile, basedir = ""):
     print "-------------------------------------"
     os.system("cp " + dir_base_name + ".prj " + dir_base_name + "-traced.prj")
 
+def processfile(inputfile, basedir = ""):
+
+    """NOTE: This still needs a lot of work for when dealing 
+       with subfolders and such. 
+       Best case is image file is located in same dir as vectorizer_map.py
+    """
+
+    global tempgdalfile
+    global instructions
+    global defaultgimp
+    global gimp_path
+    global directory
+    global path
+    global base_name
+
+    print "\n\nProcessing file: " + inputfile
+    # right now assuming vectorizer, simplifier and input are in the same folder
+    fullpath = os.path.abspath(__file__)
+
+    base_name = inputfile[:inputfile.find(".tif")]
+    base_name = base_name[base_name.rfind("/")+1:]
+
+    # create a folder to store all this
+    if basedir != '':
+        directory = basedir + '/' + base_name
+        inputfile = basedir + '/' + inputfile
+    else:
+        directory = base_name
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    path = fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
+
+    # GIMP processing
+    dir_base_name = directory + "/" + base_name
+
+    # create a log file
+    # logfile = open(directory + "/py-log.txt", "w")
+    logging.basicConfig(filename=directory + "/py-log.txt",format='%(asctime)s %(message)s',level=logging.DEBUG)
+
+    logging.debug("Log file for " + inputfile + " with colors:\n\n")
+    logging.debug(str(basecolors) + "\n\n")
+
+    outputgdal = thresholdize(inputfile, dir_base_name)
+
+    polygonize(dir_base_name)
+
+    simplify(dir_base_name)
+
+    consolidate(inputfile, dir_base_name)
+
     print ""
     print "Creating GeoJSON output..."
     print "--------------------------"
     jsonfile = dir_base_name + '-traced.json'
-    command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
+    shapefile = dir_base_name + '-traced.shp'
+    command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + shapefile
     logging.debug(command)
     # print command
     os.system(command)

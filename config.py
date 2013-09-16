@@ -13,6 +13,9 @@ else:
     defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
 
 gimp_path = defaultgimp
+directory = ""
+path = ""
+base_name = ""
 chunksize = 50000 # how to split the mega polygon file
 currentchunk = 0
 totalsubsets = 0
