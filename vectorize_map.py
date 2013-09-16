@@ -122,7 +122,6 @@ def thresholdize(inputfile, dir_base_name):
         logging.debug(command)
         # print command
         os.system(command)
-    return outputgdal
 
 def polygonize(dir_base_name):
     global chunksize
@@ -457,7 +456,7 @@ def processfile(inputfile, basedir = ""):
     logging.debug("Log file for " + inputfile + " with colors:\n\n")
     logging.debug(str(basecolors) + "\n\n")
 
-    outputgdal = thresholdize(inputfile, dir_base_name)
+    thresholdize(inputfile, dir_base_name)
 
     polygonize(dir_base_name)
 
