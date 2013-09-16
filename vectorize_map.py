@@ -10,6 +10,7 @@ import ogr
 import glob
 import csv
 import cv2
+import logging
 import numpy as np
 from cv2 import cv
 from config import *
@@ -66,6 +67,64 @@ def process_files(inputfile):
     print "Processed  " + str(totalfiles) + " files\n"
     print "Operation took " + str(deltatime.seconds) + " seconds"
 
+def thresholdize(inputfile, base_name):
+    thresholdfile = base_name + "-threshold-tmp.tif"
+    print "\n\n"
+    print "Thresholdizing:"
+    print "---------------"
+    print inputfile + " into threshold file: " + thresholdfile
+
+    contraststring = '(gimp-brightness-contrast drawable ' + str(brightness) + ' ' + str(contrast) + ')'
+    thresholdstring = '(gimp-threshold drawable ' + str(thresholdblack) + ' ' + str(thresholdwhite) + ')'
+    gimpcommand = '(let* ((image (car (file-tiff-load RUN-NONINTERACTIVE "' + inputfile + '" "' + inputfile + '"))) (drawable (car (gimp-image-get-layer-by-name image "Background")))) (gimp-selection-none image) ' + contraststring + ' ' + thresholdstring + ' (gimp-file-save RUN-NONINTERACTIVE image drawable "' + thresholdfile + '" "' + thresholdfile + '") (gimp-image-delete image))'
+
+    if (not os.path.isfile(thresholdfile)):
+        command = gimp_path + ' -i -b \'' + gimpcommand + '\' -b \'(gimp-quit 0)\''
+        logging.debug(command)
+        # print command
+        os.system(command)
+
+    tempgdalfile = base_name + "-tmp.tif"
+    outputwsg = base_name + "-wsg-tmp.tif"
+    outputgdal = base_name + "-gdal-tmp.tif"
+
+    # first get geotiff data from original
+    geoText = subprocess.Popen(["gdalinfo", inputfile], stdout=subprocess.PIPE).communicate()[0]
+    pattern = re.compile(r"Upper Left\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*\n.*\n.*\nLower Right\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*")
+    geoMatch = pattern.findall(geoText)
+    # print pattern
+    print "\n"
+    print "Geodata obtained:"
+    print "-----------------"
+    print "W", geoMatch[0][0]
+    print "N", geoMatch[0][1]
+    print "E", geoMatch[0][2]
+    print "S", geoMatch[0][3]
+    print "\n"
+
+    W = geoMatch[0][0]
+    N = geoMatch[0][1]
+    E = geoMatch[0][2]
+    S = geoMatch[0][3]
+
+    print "Applying to destination:"
+    print "------------------------"
+    # print outputgdal
+    if (not os.path.isfile(outputwsg)):
+        command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + thresholdfile + ' ' + outputwsg
+        logging.debug(command)
+        # print command
+        os.system(command)
+
+    print ""
+    if (not os.path.isfile(outputgdal)):
+        command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + outputwsg + ' ' + outputgdal
+        logging.debug(command)
+        # print command
+        os.system(command)
+    return outputgdal
+
+
 def processfile(inputfile, basedir = ""):
 
     """NOTE: This still needs a lot of work for when dealing 
@@ -107,76 +166,13 @@ def processfile(inputfile, basedir = ""):
     dir_base_name = directory + "/" + base_name
 
     # create a log file
-    logfile = open(directory + "/py-log.txt", "w")
+    # logfile = open(directory + "/py-log.txt", "w")
+    logging.basicConfig(filename=directory + "/py-log.txt",format='%(asctime)s %(message)s',level=logging.DEBUG)
 
-    logfile.write("Log file for " + inputfile + " with colors:\n\n")
-    logfile.write(str(basecolors) + "\n\n")
+    logging.debug("Log file for " + inputfile + " with colors:\n\n")
+    logging.debug(str(basecolors) + "\n\n")
 
-    thresholdfile = dir_base_name + "-threshold-tmp.tif"
-    comparativefile = dir_base_name + "-comparative-tmp.tif"
-
-    print "\n\n"
-    print "Thresholdizing:"
-    print "---------------"
-    print inputfile + " into threshold file: " + thresholdfile
-
-    contraststring = '(gimp-brightness-contrast drawable ' + str(brightness) + ' ' + str(contrast) + ')'
-    thresholdstring = '(gimp-threshold drawable ' + str(thresholdblack) + ' ' + str(thresholdwhite) + ')'
-    gimpcommand = '(let* ((image (car (file-tiff-load RUN-NONINTERACTIVE "' + inputfile + '" "' + inputfile + '"))) (drawable (car (gimp-image-get-layer-by-name image "Background")))) (gimp-selection-none image) ' + contraststring + ' ' + thresholdstring + ' (gimp-file-save RUN-NONINTERACTIVE image drawable "' + thresholdfile + '" "' + thresholdfile + '") (gimp-image-delete image))'
-
-    if (not os.path.isfile(thresholdfile)):
-        command = gimp_path + ' -i -b \'' + gimpcommand + '\' -b \'(gimp-quit 0)\''
-        logfile.write(command + "\n")
-        # print command
-        os.system(command)
-
-    tempgdalfile = dir_base_name + "-tmp.tif"
-
-
-    # GDAL transformation
-
-    print "\n"
-    print 'Origin GeoTIFF :', inputfile
-    print 'Destination      :', tempgdalfile
-
-    # BETTER (SOME) ERROR HANDLING SHOULD BE DONE!!!!!
-
-    # first get geotiff data from original
-    geoText = subprocess.Popen(["gdalinfo", inputfile], stdout=subprocess.PIPE).communicate()[0]
-    pattern = re.compile(r"Upper Left\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*\n.*\n.*\nLower Right\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*")
-    geoMatch = pattern.findall(geoText)
-    # print pattern
-    print "\n"
-    print "Geodata obtained:"
-    print "-----------------"
-    print "W", geoMatch[0][0]
-    print "N", geoMatch[0][1]
-    print "E", geoMatch[0][2]
-    print "S", geoMatch[0][3]
-    print "\n"
-
-    W = geoMatch[0][0]
-    N = geoMatch[0][1]
-    E = geoMatch[0][2]
-    S = geoMatch[0][3]
-
-    print "Applying to destination:"
-    print "------------------------"
-    # print outputgdal
-    outputwsg = dir_base_name + "-wsg-tmp.tif"
-    if (not os.path.isfile(outputwsg)):
-        command = 'gdal_translate -a_srs "+proj=latlong +datum=WGS84" -of GTiff -co "INTERLEAVE=PIXEL" -a_ullr ' + W + ' ' + N + ' ' + E + ' ' + S + ' ' + thresholdfile + ' ' + outputwsg
-        logfile.write(command + "\n")
-        # print command
-        os.system(command)
-
-    print ""
-    outputgdal = dir_base_name + "-gdal-tmp.tif"
-    if (not os.path.isfile(outputgdal)):
-        command = 'gdalwarp -s_srs EPSG:4326 -t_srs EPSG:3785 -r bilinear ' + outputwsg + ' ' + outputgdal
-        logfile.write(command + "\n")
-        # print command
-        os.system(command)
+    outputgdal = thresholdize(inputfile, dir_base_name)
 
     # QGIS POLYGONIZE
 
@@ -186,7 +182,7 @@ def processfile(inputfile, basedir = ""):
     shapefile = dir_base_name + '.shp'
     if (not os.path.isfile(shapefile)):
         command = 'gdal_polygonize.py ' + outputgdal + ' -f "ESRI Shapefile" ' + shapefile + ' ' + base_name
-        logfile.write(command + "\n")
+        logging.debug(command)
         # print command
         os.system(command)
 
@@ -281,7 +277,7 @@ def processfile(inputfile, basedir = ""):
         routput = path + '/' + base_name + '-tmp-' # + str(currentsubset)
         layer = base_name + '-tmp-' + str(currentsubset)
         command = 'R --vanilla --silent --slave -f simplify_map.R --args ' + rinput + ' ' + layer + ' ' + routput + ' ' + path + ' ' + str(currentsubset)
-        logfile.write(command + "\n")
+        logging.debug(command)
         # print command
         os.system(command)
         currentsubset = currentsubset + 1
@@ -344,7 +340,7 @@ def processfile(inputfile, basedir = ""):
             extractedfile = path + "/" + polygonfilename + "-extracted.tif"
             # extract bitmap from original
             command = "gdalwarp -q -t_srs EPSG:3785 -cutline " + polygonfile + " -crop_to_cutline -of GTiff " + inputfile + " " + extractedfile
-            logfile.write(command + "\n")
+            logging.debug(command)
             # print command
             os.system(command)
             # calculate color
@@ -375,9 +371,9 @@ def processfile(inputfile, basedir = ""):
                     # add to array
                     polygonfiles.append([polygonfile, nearestcolorindex, circle_data])
                 else:
-                    logfile.write("Ignored (paper color): " + polygonfilename + "\n")
+                    logging.debug("Ignored (paper color): " + polygonfilename + "\n")
             else:
-                logfile.write("Ignored (regex match error): " + polygonfilename + "\n")
+                logging.debug("Ignored (regex match error): " + polygonfilename + "\n")
 
     for files in polygonfiles:
         # 3 open the input data source and get the layer
@@ -438,7 +434,7 @@ def processfile(inputfile, basedir = ""):
     print "--------------------------"
     jsonfile = dir_base_name + '-traced.json'
     command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
-    logfile.write(command + "\n")
+    logging.debug(command)
     # print command
     os.system(command)
 
@@ -446,9 +442,9 @@ def processfile(inputfile, basedir = ""):
     print ""
     print "Cleaning..."
     print "-----------"
-    os.system("rm " + outputgdal)
-    os.system("rm " + outputwsg)
-    os.system("rm " + thresholdfile)
+    os.system("rm " + dir_base_name + "-gdal-tmp.tif")
+    os.system("rm " + dir_base_name + "-wsg-tmp.tif")
+    os.system("rm " + dir_base_name + "-threshold-tmp.tif")
     os.system("rm " + dir_base_name + "-tmp-*.shp")
     os.system("rm " + dir_base_name + "-tmp-*.dbf")
     os.system("rm " + dir_base_name + "-tmp-*.shx")
@@ -457,7 +453,7 @@ def processfile(inputfile, basedir = ""):
     os.system("rm " + dir_base_name + ".*")
 
     # close log file
-    logfile.close()
+    # logfile.close()
 
 def cvFeatureDetect(inputfile):
     max_dist = 20 # distance between circles to consider it an empty circle
