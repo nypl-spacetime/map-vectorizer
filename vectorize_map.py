@@ -49,7 +49,7 @@ def setup_gimp():
             if len(tempcolors) > 2:
                 basecolors = tempcolors
 
-def process_files(inputfile):
+def process(inputfile):
     totalfiles = 0
     # If input is a directory iterate through it
     if os.path.isdir(inputfile) == True:
@@ -67,7 +67,7 @@ def process_files(inputfile):
     print "Processed  " + str(totalfiles) + " files\n"
     print "Operation took " + str(deltatime.seconds) + " seconds"
 
-def thresholdize(inputfile, dir_base_name):
+def thresholdize(inputfile):
     thresholdfile = dir_base_name + "-threshold-tmp.tif"
     print "\n\n"
     print "Thresholdizing:"
@@ -123,8 +123,7 @@ def thresholdize(inputfile, dir_base_name):
         # print command
         os.system(command)
 
-def polygonize(dir_base_name):
-    global chunksize
+def polygonize():
     global currentchunk
     global totalsubsets
     global base_name
@@ -132,7 +131,6 @@ def polygonize(dir_base_name):
     currentchunk = 0
     totalsubsets = 0
 
-    base_name = dir_base_name[dir_base_name.find("/")+1:]
     outputgdal = dir_base_name + "-gdal-tmp.tif"
     # QGIS POLYGONIZE
 
@@ -222,12 +220,7 @@ def polygonize(dir_base_name):
     print "Produced " + str(totalsubsets) + " temporary shapefiles"
     print ""
 
-def simplify(dir_base_name):
-    global totalsubsets
-    global directory
-    global base_name
-    global path
-
+def simplify():
     # R Simplification
 
     print ""
@@ -246,10 +239,7 @@ def simplify(dir_base_name):
         os.system(command)
         currentsubset = currentsubset + 1
 
-def consolidate(inputfile, dir_base_name):
-    global base_name
-    global path
-
+def consolidate(inputfile):
     # Now combine all subsets into a macroset
 
     # 4 create a new data source and layer
@@ -425,6 +415,7 @@ def processfile(inputfile, basedir = ""):
     global gimp_path
     global directory
     global path
+    global dir_base_name
     global base_name
 
     print "\n\nProcessing file: " + inputfile
@@ -456,13 +447,13 @@ def processfile(inputfile, basedir = ""):
     logging.debug("Log file for " + inputfile + " with colors:\n\n")
     logging.debug(str(basecolors) + "\n\n")
 
-    thresholdize(inputfile, dir_base_name)
+    thresholdize(inputfile)
 
-    polygonize(dir_base_name)
+    polygonize()
 
-    simplify(dir_base_name)
+    simplify()
 
-    consolidate(inputfile, dir_base_name)
+    consolidate(inputfile)
 
     print ""
     print "Creating GeoJSON output..."
@@ -614,7 +605,7 @@ def main(argv):
     print author_information
 
     setup_gimp()
-    process_files(inputfile)
+    process(inputfile)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
