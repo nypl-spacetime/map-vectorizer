@@ -59,8 +59,10 @@ def process(inputfile):
                 process_file(ff, inputfile)
     else:
         # if input is a file, process it
-        process_file(inputfile)
-        totalfiles = 1
+        # but first look to see if there is a path prepending it
+        if inputfile.endswith(".tif"):
+            process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")])
+            totalfiles = 1
 
     endtime = datetime.datetime.now()
     deltatime = endtime - starttime
