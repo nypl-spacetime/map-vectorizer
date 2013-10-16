@@ -70,16 +70,16 @@ A few things to be installed in your system in order to work properly. So far it
 These step by step instructions should work as-is. If not, **check all the above are working** before submitting an issue.
 
 1. Add the `gimp-scripts/` folder to the GIMP Script-Fu folders in  `Preferences > Scripts`. Make sure to run GIMP at least once if you restart your machine (not sure why it behaves this way... I am trying to make the project non-GIMP-dependent so this won't become an issue)
-2. Add executable privileges to the main `vectorize_map.py` script like so: 
-`chmod +x vectorize_map.py`. 
 The other Python files are for testing purposes and might be excluded in later commits but feel free to browse them.
-3. Take note of the path where the GIMP executable is installed (another reason why I want to remove GIMP from the process).
+2. Take note of the path where the GIMP executable is installed (another reason why I want to remove GIMP from the process).
 
 And finally:
 
-4. Run the script on the provided test GeoTIFF:
-`./vectorize_map.py test.tif`
-5. Accept the GIMP folder location or input a different one and press ENTER.
+3. Run the script on the provided test GeoTIFF:
+`python vectorize_map.py test.tif`
+4. Accept the GIMP folder location or input a different one and press ENTER.
+
+*NOTE:* The vectorizer has problems with *filenames that contain spaces*. This will be supported eventually.
 
 This should take about 70 seconds to process. **If it takes less there might be an error** (or your machine rulez). Take a look at the console output to find the possible culprit.
 
@@ -93,6 +93,7 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 
 ## Change log
 
+* Added support for absolute paths.
 * Added a config file (rename `vectorize_config_default.txt` to `vectorize_config.txt`).
 * Added `consolidator.py` to assemble a set of shapefiles in a folder into a single file.
 * Added very rough OpenCV circle and cross detection (not working very well but it is a starting point).

@@ -437,7 +437,7 @@ def process_file(inputfile, basedir = ""):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    path = fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
+    path = os.path.abspath(directory)#fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
 
     # GIMP processing
     dir_base_name = directory + "/" + base_name
