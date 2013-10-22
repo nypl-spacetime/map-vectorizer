@@ -88,11 +88,12 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 
 ## Change log
 
-* Added support for absolute paths.
-* Added a config file (rename `vectorize_config_default.txt` to `vectorize_config.txt`).
-* Added `consolidator.py` to assemble a set of shapefiles in a folder into a single file.
-* Added very rough OpenCV circle and cross detection (not working very well but it is a starting point).
-* Added GeoJSON output.
+* 0.6: Fixed bug introduced in 0.5. Removed mention to GIMP preferences in README.
+* 0.5: Added support for absolute paths.
+* 0.4: Added a config file (rename `vectorize_config_default.txt` to `vectorize_config.txt`).
+* 0.3: Added `consolidator.py` to assemble a set of shapefiles in a folder into a single file.
+* 0.2: Added very rough OpenCV circle and cross detection (not working very well but it is a starting point).
+* 0.1: Added GeoJSON output.
 
 [@mgiraldo]: https://twitter.com/mgiraldo
 [@nypl_labs]: https://twitter.com/nypl_labs
