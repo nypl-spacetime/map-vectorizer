@@ -61,7 +61,7 @@ def process(inputfile):
         # if input is a file, process it
         # but first look to see if there is a path prepending it
         if inputfile.endswith(".tif"):
-            process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")])
+            process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
             totalfiles = 1
 
     endtime = datetime.datetime.now()

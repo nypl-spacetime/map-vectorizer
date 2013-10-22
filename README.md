@@ -69,17 +69,12 @@ A few things to be installed in your system in order to work properly. So far it
 
 These step by step instructions should work as-is. If not, **check all the above are working** before submitting an issue.
 
-1. Add the `gimp-scripts/` folder to the GIMP Script-Fu folders in  `Preferences > Scripts`. Make sure to run GIMP at least once if you restart your machine (not sure why it behaves this way... I am trying to make the project non-GIMP-dependent so this won't become an issue)
-The other Python files are for testing purposes and might be excluded in later commits but feel free to browse them.
-2. Take note of the path where the GIMP executable is installed (another reason why I want to remove GIMP from the process).
-
-And finally:
-
-3. Run the script on the provided test GeoTIFF:
+1. Take note of the path where the GIMP executable is installed (the default value in the vectorizer is the Mac OS location: `/Applications/Gimp.app/Contents/MacOS/gimp-2.8`).
+2. Run the script on the provided test GeoTIFF:
 `python vectorize_map.py test.tif`
-4. Accept the GIMP folder location or input a different one and press ENTER.
+3. Accept the GIMP folder location or input a different one and press ENTER.
 
-*NOTE:* The vectorizer has problems with *filenames that contain spaces*. This will be supported eventually.
+**NOTE:** The vectorizer has problems with *filenames that contain spaces*. This will be supported eventually.
 
 This should take about 70 seconds to process. **If it takes less there might be an error** (or your machine rulez). Take a look at the console output to find the possible culprit.
 
