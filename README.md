@@ -62,7 +62,13 @@ A few things to be installed in your system in order to work properly. So far it
 ```
 
 * [GIMP]
-* [GDAL Tools], on OS X try [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg) 
+* [GDAL Tools], on OS X try [version 1.9](http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-1.9.dmg). Per [MapBox](https://www.mapbox.com/tilemill/docs/guides/gdal/): The first time you install the GDAL package there is one additional step to make sure you can access these programs. In Mac OS, Open the Terminal application and run the following commands:
+
+```
+    echo 'export PATH=/Library/Frameworks/GDAL.framework/Programs:$PATH' >> ~/.bash_profile
+    source ~/.bash_profile
+```
+
 * It is also a good idea to install [QGIS] to test your results
 
 ## First run
