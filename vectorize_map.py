@@ -11,6 +11,7 @@ import glob
 import csv
 import cv2
 import logging
+import string
 import numpy as np
 from cv2 import cv
 from config import *
@@ -91,6 +92,7 @@ def thresholdize(inputfile):
     outputgdal = dir_base_name + "-gdal-tmp.tif"
 
     # first get geotiff data from original
+    logging.debug( string.join(["gdalinfo", os.path.abspath(inputfile)]) )
     geoText = subprocess.Popen(["gdalinfo", os.path.abspath(inputfile)], stdout=subprocess.PIPE).communicate()[0]
     pattern = re.compile(r"Upper Left\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*\n.*\n.*\nLower Right\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*")
     geoMatch = pattern.findall(geoText)
@@ -320,6 +322,7 @@ def consolidate(inputfile):
             os.system(command)
             # calculate color
             # shrink to 1x1 and find value
+            logging.debug( string.join(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"]) )
             pixelvalue = subprocess.Popen(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
             pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
             values = pattern.findall(pixelvalue)
