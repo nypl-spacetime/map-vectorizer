@@ -86,6 +86,35 @@ This should take about 70 seconds to process. **If it takes less there might be 
 
 If it works, you will see a `test` folder with a `test-traced` set of files (`.shp`, `.dbf`, `.prj` and `.shx`) and two log files.
 
+## Customizing The Vectorizer to your own maps
+
+The Vectorizer was made to work with the [NYPL map atlases](http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24). It is likely that your maps have different quality and colors. In order for this to work in your maps, you first need to do some minor config adjustments to generate a proper threshold file for your set (assuming it is a map set similar to the provided example `test.tif`):
+
+1. Open a representative from map (or maps) in GIMP
+1. With the color picker, **select the color that most represents the paper/background color** (using a 5-pixel averaging pick would be best). Make note of the **red, green and blue values** (0-255).
+1. Do the **same for the building colors** (like the pink, green, blue in the example).
+
+You now want to produce a neat black-white image where **lines are black and all the rest is white**:
+
+1. Apply `Colors > Brightness-Contrast...` looking to make the lines darker and buildings/paper brighter. The default values are **-50 brightness** and **95 contrast**. These may or may not work for you. Make note of the values that work best.
+1. Now apply `Colors > Threshold...`. This takes a black and a white value. Anything darker/lighter than these values will become black/white respectively. The default values are **160 black** and **255 white**. Make note of the values that work best.
+
+You now have the configuration values for your maps (map color list, brightness-contrast values, threshold values). Open `vectorize_config_default.txt` and replace the default values with your custom values. Save it as `vectorize_config.txt` (and *keep the default just in case*). Your config file should look like:
+
+```
+BRIGHTNESS_VALUE,CONTRAST_VALUE,BLACK_VALUE,WHITE_VALUE, brightness-contrast-thresholdblack-thresholdwhite
+PAPER_RED,PAPER_GREEN,PAPER_BLUE,paper
+BLDG_RED,BLDG_GREEN,BLDG_BLUE,somebuildingcolor
+BLDG_RED,BLDG_GREEN,BLDG_BLUE,someotherbuildingcolor
+...
+```
+
+It should **always start** with brightness/contrast/threshold in the first line and paper in the second line. There should also be **at least one building color**. You can add as many building colors as you wish (since our maps at NYPL are hand-colored, colors are not uniform so we have lighter/darker versions to compensate that).
+
+When you run the vectorizer again, it will find this config file and use those values instead of the defaults.
+
+It is likely that the vectorizer won't produce excellent results in the first try. It is a matter of adjusting these color values to generalize as much as possible to your map set.
+
 ## Acknowledgements
 
 * Michael Resig
