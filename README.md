@@ -80,6 +80,12 @@ This should take about 70 seconds to process. **If it takes less there might be 
 
 If it works, you will see a `test` folder with a `test-traced` set of files (`.shp`, `.dbf`, `.prj` and `.shx`) and two log files.
 
+## Other scripts
+
+*calculate_centroids.py* for adding `CentroidX` and `CentroidY` float attributes to a shapefile/GeoJSON.
+
+Usage: `python calculate_centroids.py geojson input.json output.json`
+
 ## Acknowledgements
 
 * Michael Resig
