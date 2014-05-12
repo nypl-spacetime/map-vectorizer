@@ -65,7 +65,7 @@ for (i in 1: num) {
 					ends = names(which(degree(cutg) == 1))
 					path = get.shortest.paths(cutg, ends[1], ends[2])[[1]]
 					# this is an index into the points
-					pathX = as.numeric(V(x.asg)[path]$name)
+					pathX = as.numeric(V(x.asg)[path[[1]]]$name)
 					# join the ends
 					pathX = c(pathX, pathX[1])
 					p = Polygon(x.as$x[pathX, ])
