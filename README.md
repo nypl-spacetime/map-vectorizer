@@ -10,7 +10,7 @@ A open-source map vectorizer. Provided **as is** by [NYPL Labs](http://www.nypl.
 
 This project aims to automate the manual process of geographic polygon and attribute data extraction from maps (i.e. georectified images) including those from [insurance atlases](http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24) published in the 19th and early 20th centuries. [Here is some background](http://www.nypl.org/blog/2012/06/13/nyc-historical-gis-project) on why we're doing this and [here is one of the maps](http://digitalcollections.nypl.org/items/510d47e0-c7cc-a3d9-e040-e00a18064a99) we're extracting polygons from. This [example map layer](http://maps.nypl.org/warper/layers/859) shows what these atlases look like once geo-rectified, i.e. geographically normalized.
 
-[The New York Public Library](http://www.nypl.org) has **hundreds of atlases** with **tens of thousands** of these sheets and there is no way we can extract data manually in a reasonable amount of time. 
+[The New York Public Library](http://www.nypl.org) has **hundreds of atlases** with **tens of thousands** of these sheets and there is no way we can extract data manually in a reasonable amount of time.
 
 Just so you get an idea, it took NYPL staff coordinating a small army of volunteers **three years to produce** 170,000 polygons with attributes (from just four of hundreds of atlases at NYPL).
 
@@ -44,13 +44,13 @@ A few things to be installed in your system in order to work properly. So far it
     * `brew install libtiff`
     * `brew install imagemagick --with-libtiff`
     * To verify all is well:
-    * `convert -list format` should display `TIFF` and `TIFF64` in the list 
+    * `convert -list format` should display `TIFF` and `TIFF64` in the list
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
 * You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
-    * `rgdal`
+    * `rgdal` (download the [binary for your OS])(http://cran.r-project.org/web/packages/rgdal/index.html) then run `R CMD INSTALL --configure-args="" path/to/rgdal.tar.gz`)
     * `alphahull` (you will need `tripack`, `sgeostat`, `splancs` as dependencies)
-    * `igraph` 
-    * `shapefiles` 
+    * `igraph`
+    * `shapefiles`
     * On the CLI (by typing `R` in a terminal window) you will know you have all the required dependencies if you can run this with no errors:
 
 ```
