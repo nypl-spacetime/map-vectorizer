@@ -47,10 +47,10 @@ A few things to be installed in your system in order to work properly. So far it
     * `convert -list format` should display `TIFF` and `TIFF64` in the list
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
 * You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
-    * `rgdal` (download the [binary for your OS](http://cran.r-project.org/web/packages/rgdal/index.html) then run `R CMD INSTALL --configure-args="" path/to/rgdal.tar.gz`)
     * `alphahull` (you will need `tripack`, `sgeostat`, `splancs` as dependencies)
     * `igraph`
     * `shapefiles`
+    * `rgdal` (download the [binary for your OS](http://cran.r-project.org/web/packages/rgdal/index.html) then run `R CMD INSTALL --configure-args="" path/to/rgdal.tar.gz`)
     * On the CLI (by typing `R` in a terminal window) you will know you have all the required dependencies if you can run this with no errors:
 
 ```
@@ -90,7 +90,12 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 
 The Vectorizer was made to work with the [NYPL map atlases](http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24). It is likely that your maps have different quality and colors. In order for this to work in your maps, you first need to do some minor config adjustments to generate a proper threshold file for your set (assuming it is a map set similar to the provided example `test.tif`):
 
-1. Your map needs to be in **WSG84 projection**. Other projections might be supported in the future.
+1. Your map needs to be in **WSG84 projection**. Other projections might be supported in the future. Use `gdalwarp` to make this conversion like so:
+
+```
+gdalwarp -t_srs "EPSG:4326" input.tif output.tif
+```
+
 1. Open a representative from map (or maps) in GIMP
 1. With the color picker, **select the color that most represents the paper/background color** (using a 5-pixel averaging pick would be best). Make note of the **red, green and blue values** (0-255).
 1. Do the **same for the building colors** (like the pink, green, blue in the example).
