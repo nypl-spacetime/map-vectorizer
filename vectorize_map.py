@@ -87,7 +87,6 @@ def thresholdize(inputfile):
         # print command
         os.system(command)
 
-    tempgdalfile = dir_base_name + "-tmp.tif"
     outputwsg = dir_base_name + "-wsg-tmp.tif"
     outputgdal = dir_base_name + "-gdal-tmp.tif"
 
@@ -414,7 +413,6 @@ def process_file(inputfile, basedir = ""):
        Best case is image file is located in same dir as vectorizer_map.py
     """
 
-    global tempgdalfile
     global instructions
     global defaultgimp
     global gimp_path

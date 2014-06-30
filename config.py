@@ -2,7 +2,6 @@
 import subprocess
 import os
 
-tempgdalfile = ''
 instructions = 'vectorize_map.py <input file or dir>'
 if os.name == 'posix':
     try:
