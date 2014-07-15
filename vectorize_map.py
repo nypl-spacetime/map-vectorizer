@@ -1,20 +1,8 @@
 #!/usr/bin/python
-import re 
-import sys
-import getopt
-import subprocess
-import shlex
-import os 
-import datetime
-import ogr
-import glob
-import csv
-import cv2
-import logging
-import string
-import numpy as np
+import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob, csv, cv2, logging, string, numpy as np
 from cv2 import cv
 from config import *
+from PIL import Image
 
 def setup_gimp():
     global gimp_path
@@ -321,14 +309,15 @@ def consolidate(inputfile):
             os.system(command)
             # calculate color
             # shrink to 1x1 and find value
-            logging.debug( string.join(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"]) )
-            pixelvalue = subprocess.Popen(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
-            pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
-            values = pattern.findall(pixelvalue)
+            # logging.debug( string.join(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"]) )
+            # pixelvalue = subprocess.Popen(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
+            # pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
+            # values = pattern.findall(pixelvalue)
+            values = average_color(os.path.abspath(extractedfile))
             if len(values) > 0:
-                red = int(values[0][0])
-                green = int(values[0][1])
-                blue = int(values[0][2])
+                red = int(values[0])
+                green = int(values[1])
+                blue = int(values[2])
                 nearest = 100000
                 nearestcolor = []
                 nearestcolorindex = -1
@@ -586,6 +575,9 @@ def cv_feature_detect(inputfile):
     result["cross_data"] = crosses["data"]
 
     return result
+
+def average_color(image):
+    return Image.open(image).resize((1,1)).getpixel((0,0))
 
 def main(argv):
     global instructions

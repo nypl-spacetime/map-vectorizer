@@ -39,12 +39,7 @@ The goal is to extract the following data (✔ = mostly solved so far, ✢ = in 
 
 A few things to be installed in your system in order to work properly. So far it has been **tested on Mac OS X Lion** so these instructions apply to that configuration only. I am sure you will be able to adapt it to your current configuration.
 
-* [Python] with [OpenCV]
-* [ImageMagick] with the `libtiff` delegate. If using `brew` this means:
-    * `brew install libtiff`
-    * `brew install imagemagick --with-libtiff`
-    * To verify all is well:
-    * `convert -list format` should display `TIFF` and `TIFF64` in the list
+* [Python] with [OpenCV] and [PIL]
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
 * You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
     * `alphahull` (you will need `tripack`, `sgeostat`, `splancs` as dependencies)
@@ -135,6 +130,7 @@ Usage: `python calculate_centroids.py geojson input.json output.json`
 
 ## Change log
 
+* 0.7: Calculating average color with PIL instead of ImageMagick. Removed ImageMagick dependency, added PIL as dependency.
 * 0.6: Fixed bug introduced in 0.5. Removed mention to GIMP preferences in README.
 * 0.5: Added support for absolute paths.
 * 0.4: Added a config file (rename `vectorize_config_default.txt` to `vectorize_config.txt`).
@@ -146,7 +142,7 @@ Usage: `python calculate_centroids.py geojson input.json output.json`
 [@nypl_labs]: https://twitter.com/nypl_labs
 [Python]: http://www.python.org/
 [OpenCV]: http://opencv.org/
-[ImageMagick]: http://www.imagemagick.org/script/download.php
+[PIL]: http://pythonware.com/products/pil/
 [R]: http://www.r-project.org/
 [GIMP]: http://www.gimp.org/
 [GDAL Tools]: http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries
