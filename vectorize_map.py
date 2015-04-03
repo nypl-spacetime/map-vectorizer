@@ -607,9 +607,9 @@ def average_color(image):
             b+=data[x][2]
             counter+=1
     # compute average RGB values
-    rAvg = r/counter
-    gAvg = g/counter
-    bAvg = b/counter
+    rAvg = r/counter if counter > 0 else 0
+    gAvg = g/counter if counter > 0 else 0
+    bAvg = b/counter if counter > 0 else 0
     return (rAvg, gAvg, bAvg)
     # return Image.open(image).resize((1,1)).getpixel((0,0))
 
