@@ -122,6 +122,10 @@ It is likely that the vectorizer won't produce excellent results in the first tr
 
 Usage: `python calculate_centroids.py geojson input.json output.json`
 
+*consolidator.py* for consolidating multiple outputs of a `vectorize_map.py` process into a single shapefile/GeoJSON. For example, when you run `vectorize_map.py` on a folder full of GeoTIFFs and then need to group all the individual folder outputs into a master file.
+
+Usage: `python consolidator.py path/to/folder` (no trailing slash)
+
 ## Acknowledgements
 
 * Michael Resig
@@ -130,6 +134,7 @@ Usage: `python calculate_centroids.py geojson input.json output.json`
 
 ## Change log
 
+* 0.8: Documented `consolidator.py`. Minor bug fixes.
 * 0.7: Calculating average color with PIL instead of ImageMagick. Removed ImageMagick dependency, added PIL as dependency.
 * 0.6: Fixed bug introduced in 0.5. Removed mention to GIMP preferences in README.
 * 0.5: Added support for absolute paths.

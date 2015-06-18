@@ -7,14 +7,19 @@ import ogr
 def main(argv):
     inputfile = argv[0]
 
+    finalpath = inputfile + '/' + os.path.basename(inputfile)
+
     totalpolygons = 0
+
+    totalfiles = 0
 
     # 2 get the shapefile driver
     driver = ogr.GetDriverByName('ESRI Shapefile')
 
     # 4 create a new data source and layer
-    fn = inputfile + '/' + inputfile + '.shp'
-    if os.path.exists(fn):driver.DeleteDataSource(fn)
+    fn = finalpath + '.shp'
+    if os.path.exists(fn):
+        driver.DeleteDataSource(fn)
     outDS = driver.CreateDataSource(fn)
     if outDS is None:
         print 'Could not create consolidated shapefile'
@@ -62,8 +67,12 @@ def main(argv):
             base_name = ff[:ff.find(".tif")]
             shapefile = inputfile + "/" + base_name + "/" + base_name + "-traced.shp"
 
+            print "Processing: " + shapefile
+
+            totalfiles = totalfiles + 1
+
             if totalpolygons == 0:
-                os.system("cp " + inputfile + "/" + base_name + "/" + base_name + "-traced.prj " + inputfile + "/" + inputfile + ".prj")
+                os.system("cp " + inputfile + "/" + base_name + "/" + base_name + "-traced.prj " + finalpath + ".prj")
 
             # 3 open the input data source and get the layer
             inDS = driver.Open(shapefile, 0) #shows cover at given points
@@ -130,9 +139,12 @@ def main(argv):
     print ""
     print "Creating GeoJSON output..."
     print "--------------------------"
-    jsonfile = inputfile + '/' + inputfile + '.json'
+    jsonfile = finalpath + '.json'
     command = 'ogr2ogr -t_srs EPSG:4326 -s_srs EPSG:3857 -f "GeoJSON" ' + jsonfile + ' ' + fn
-    # print command
+    print jsonfile
+
+    print ""
+    print "Processed " , totalfiles , " files"
     os.system(command)
 
 

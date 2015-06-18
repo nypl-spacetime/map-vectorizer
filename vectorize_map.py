@@ -314,7 +314,7 @@ def consolidate(inputfile):
             # pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
             # values = pattern.findall(pixelvalue)
             extractedpath = os.path.abspath(extractedfile)
-            if not os.path.exists(extractedpath):
+            if os.path.exists(extractedpath) == False:
                 next
             values = average_color(extractedpath)
             if len(values) > 0:
