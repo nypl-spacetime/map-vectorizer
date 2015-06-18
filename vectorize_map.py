@@ -313,7 +313,10 @@ def consolidate(inputfile):
             # pixelvalue = subprocess.Popen(["convert", "-quiet", os.path.abspath(extractedfile), "-resize", "1x1","txt:-"], stdout=subprocess.PIPE).communicate()[0]
             # pattern = re.compile(r"0,0: \(([\s0-9]*),([\s0-9]*),([\s0-9]*).*")
             # values = pattern.findall(pixelvalue)
-            values = average_color(os.path.abspath(extractedfile))
+            extractedpath = os.path.abspath(extractedfile)
+            if not os.path.exists(extractedpath):
+                next
+            values = average_color(extractedpath)
             if len(values) > 0:
                 red = int(values[0])
                 green = int(values[1])
