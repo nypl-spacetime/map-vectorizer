@@ -315,7 +315,7 @@ def consolidate(inputfile):
             # values = pattern.findall(pixelvalue)
             extractedpath = os.path.abspath(extractedfile)
             if os.path.exists(extractedpath) == False:
-                next
+                continue
             values = average_color(extractedpath)
             if len(values) > 0:
                 red = int(values[0])
