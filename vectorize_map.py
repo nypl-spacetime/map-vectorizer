@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import re, sys, getopt, subprocess, shlex, os, datetime, ogr, glob, csv, cv2, logging, string, numpy as np
+import re, sys, getopt, subprocess, shlex, os, datetime, ogr, osr, glob, csv, cv2, logging, string, numpy as np
 from cv2 import cv
 from config import *
 from PIL import Image
@@ -294,6 +294,10 @@ def consolidate(inputfile):
     crossDataDefn.SetWidth(255)
     outLayer.CreateField( crossDataDefn )
 
+    # add lat/lon as OFTReal attributes
+    outLayer.CreateField(ogr.FieldDefn("CentroidY", ogr.OFTReal))
+    outLayer.CreateField(ogr.FieldDefn("CentroidX", ogr.OFTReal))
+
     polygonfiles = []
     for files in os.listdir(path):
         if files.endswith(".shp") and files.find('-polygon') != -1:
@@ -376,6 +380,21 @@ def consolidate(inputfile):
 
             outFeature.SetField('CrossData', str(files[2]["cross_data"]) )
 
+            source_srs = osr.SpatialReference()
+            source_srs.ImportFromEPSG(3785) # NOTE: notice this is hardcoded
+
+            target_srs = osr.SpatialReference()
+            target_srs.ImportFromEPSG(4326) # NOTE: notice this is hardcoded
+
+            transform = osr.CoordinateTransformation(source_srs, target_srs)
+
+            centroid = geom.Centroid()
+
+            centroid.Transform(transform)
+
+            outFeature.SetField('CentroidY', centroid.GetY())
+            outFeature.SetField('CentroidX', centroid.GetX())
+
             # outFeature.SetField('circle_count', files[2]["circle_count"])
             # outFeature.SetField('circle_type', files[2]["is_outline"])
             # add the feature to the output layer
@@ -400,8 +419,8 @@ def consolidate(inputfile):
 
 def process_file(inputfile, basedir = ""):
 
-    """NOTE: This still needs a lot of work for when dealing 
-       with subfolders and such. 
+    """NOTE: This still needs a lot of work for when dealing
+       with subfolders and such.
        Best case is image file is located in same dir as vectorizer_map.py
     """
 

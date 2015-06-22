@@ -134,6 +134,7 @@ Usage: `python consolidator.py path/to/folder` (no trailing slash)
 
 ## Change log
 
+* 0.9: Vectorizer now produces centroids (`calculate_centroids.py` is less necessary now).
 * 0.8: Documented `consolidator.py`. Minor bug fixes.
 * 0.7: Calculating average color with PIL instead of ImageMagick. Removed ImageMagick dependency, added PIL as dependency.
 * 0.6: Fixed bug introduced in 0.5. Removed mention to GIMP preferences in README.
