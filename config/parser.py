@@ -3,6 +3,8 @@ import subprocess
 import os
 import argparse
 
+from . import vectorize_config_parser
+
 if os.name == 'posix':
     try:
         defaultgimp = subprocess.check_output(["which", "gimp"])[:-1]
@@ -24,6 +26,16 @@ parser.add_argument('--chunksize', default = 50000,
                     help = 'how to split the mega polygon file')
 parser.add_argument('--currentchunk', default = 0),
 parser.add_argument('--totalsubsets', default = 0),
+
+# Load the default vectorize_config
 fn = os.path.abspath(os.path.join(__file__, '..', 'vectorize_config_default.txt'))
-parser.add_argument('--image-processing-configuration-file', '-p', default = fn,
+def vectorize_config(fn):
+    if os.path.isfile(fn):
+        with open(fn) as fp:
+            vectorize_config = vectorize_config_parser.parse(fp)
+    else:
+        raise ValueError('%s is not a file.' % fn)
+
+parser.add_argument('--image-processing-configuration-file', '-p',
+                    default = vectorize_config(fn), type = vectorize_config,
                     dest = 'vectorize_config')
