@@ -17,23 +17,24 @@ author_information = 'NYPL Labs Map Vectorizer v0.1 by Mauricio Giraldo Arteaga 
 parser = argparse.ArgumentParser(description = author_information)
 parser.add_argument('input', metavar = '<input file or dir>')
 parser.add_argument('--gimp-path', default = defaultgimp)
+parser.add_argument('--directory', default = ''),
+parser.add_argument('--path', default = ''),
+parser.add_argument('--base_name', default = ''),
+parser.add_argument('--dir_base_name', default = ''),
+parser.add_argument('--chunksize', default = 50000,
+                    help = 'how to split the mega polygon file')
+parser.add_argument('--currentchunk', default = 0),
+parser.add_argument('--totalsubsets', default = 0),
+parser.add_argument('--brightness', default = -50),
+parser.add_argument('--contrast', default = 95),
+parser.add_argument('--thresholdblack', default = 145),
+parser.add_argument('--thresholdwhite', default = 255),
 
 args = parser.parse_args()
 print(args)
 exit()
 
 
-directory = ''
-path = ''
-base_name = ''
-dir_base_name = ''
-chunksize = 50000 # how to split the mega polygon file
-currentchunk = 0
-totalsubsets = 0
-brightness = -50
-contrast = 95
-thresholdblack = 145
-thresholdwhite = 255
 basecolors = [
      [206,202,185] # paper
     ,[199,179,173] # pink
