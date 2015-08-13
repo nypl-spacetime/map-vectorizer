@@ -376,20 +376,20 @@ def consolidate(inputfile):
     print "-------------------------------------"
     os.system("cp " + dir_base_name + ".prj " + dir_base_name + "-traced.prj")
 
-def process_file(inputfile, basedir = ""):
+def process_file(args, inputfile, basedir = ""):
 
     """NOTE: This still needs a lot of work for when dealing
        with subfolders and such.
        Best case is image file is located in same dir as vectorizer_map.py
     """
 
-    global instructions
-    global defaultgimp
-    global gimp_path
-    global directory
-    global path
-    global dir_base_name
-    global base_name
+    instructions = args.instructions
+    defaultgimp = args.defaultgimp
+    gimp_path = args.gimp_path
+    directory = args.directory
+    path = args.path
+    dir_base_name = args.dir_base_name
+    base_name = args.base_name
 
     print "\n\nProcessing file: " + inputfile
     # right now assuming vectorizer, simplifier and input are in the same folder
