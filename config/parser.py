@@ -13,7 +13,7 @@ if os.name == 'posix':
 else:
     defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
 
-author_information = 'NYPL Labs Map Vectorizer v0.1 by Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs'
+author_information = 'NYPL Labs Map Vectorizer v0.1 by Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs and Thomas Levine (https://thomaslevine.com)'
 
 parser = argparse.ArgumentParser(description = author_information)
 parser.add_argument('inputfile', metavar = '<input file or dir>')
