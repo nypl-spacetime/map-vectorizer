@@ -73,11 +73,7 @@ def thresholdize(inputfile):
         # print command
         os.system(command)
 
-def polygonize():
-    global currentchunk
-    global totalsubsets
-    global base_name
-
+def polygonize(dir_base_name):
     currentchunk = 0
     totalsubsets = 0
 
@@ -422,7 +418,7 @@ def process_file(args, inputfile, basedir = ""):
 
     thresholdize(inputfile)
 
-    polygonize()
+    polygonize(dir_base_name
 
     simplify()
 
