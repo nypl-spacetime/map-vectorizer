@@ -1,42 +1,8 @@
 #!/usr/bin/python
 import re, sys, getopt, subprocess, shlex, os, datetime, ogr, osr, glob, csv, cv2, logging, string, numpy as np
 from cv2 import cv
-from config import *
+from config import parser
 from PIL import Image
-
-def setup_gimp():
-    global gimp_path
-    global basecolors
-    global brightness
-    global contrast
-    global thresholdblack
-    global thresholdwhite
-    global starttime
-
-    gimp_path = raw_input("GIMP executable path [" + defaultgimp +  "]: ")
-    starttime = datetime.datetime.now()
-    config_file = "vectorize_config.txt"
-
-    if gimp_path == '':
-        gimp_path = defaultgimp
-
-    if os.path.isfile(config_file):
-        tempcolors = []
-        index = 0
-        with open(config_file, 'r') as configcsv:
-            configdata = csv.reader(configcsv, delimiter=',')
-            for row in configdata:
-                if index > 0:
-                    tempcolors.append([int(row[0]), int(row[1]), int(row[2])])
-                else:
-                    # brightness/contrast/threshold values
-                    brightness = int(row[0])
-                    contrast = int(row[1])
-                    thresholdblack = int(row[2])
-                    thresholdwhite = int(row[3])
-                index = index + 1
-            if len(tempcolors) > 2:
-                basecolors = tempcolors
 
 def process(inputfile):
     totalfiles = 0
