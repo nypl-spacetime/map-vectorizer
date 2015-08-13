@@ -27,24 +27,3 @@ parser.add_argument('--totalsubsets', default = 0),
 fn = os.path.abspath(os.path.join(__file__, '..', 'vectorize_config_default.txt'))
 parser.add_argument('--image-processing-configuration-file', '-p', default = fn,
                     dest = 'vectorize_config')
-
-
-
-args = parser.parse_args()
-print(args)
-exit()
-
-
-basecolors = [
-     [206,202,185] # paper
-    ,[199,179,173] # pink
-    ,[179,155,157] # dark red
-    ,[149,156,141] # green
-    ,[199,195,163] # light yellow
-    ,[195,189,154] # yellow
-    ,[255,225,40]  # bright yellow
-    ,[137,174,163] # greenish blue
-    ,[187,194,192] # light blue
-    ,[161,175,190] # "navy" blue
-]
-
