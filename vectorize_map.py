@@ -604,39 +604,6 @@ def average_color(image):
 def main():
     args = config.parse.parse_args()
 
-    global instructions
-    global defaultgimp
-    global gimp_path
-    global basecolors
-    global brightness
-    global contrast
-    global thresholdblack
-    global thresholdwhite
-    global starttime
-
-    # Process CLI args
-    try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-    except getopt.GetoptError:
-        print instructions
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print instructions
-            sys.exit()
-        elif opt in ("-i"):
-            inputfile = arg
-
-    if len(argv) == 1:
-        inputfile = argv[0]
-
-    if inputfile == '':
-        print instructions
-        sys.exit(2)
-
-    print author_information
-
-    setup_gimp()
     process(inputfile)
 
 if __name__ == "__main__":
