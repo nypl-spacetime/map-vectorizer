@@ -16,7 +16,7 @@ else:
 author_information = 'NYPL Labs Map Vectorizer v0.1 by Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs'
 
 parser = argparse.ArgumentParser(description = author_information)
-parser.add_argument('input', metavar = '<input file or dir>')
+parser.add_argument('inputfile', metavar = '<input file or dir>')
 parser.add_argument('--gimp-path', default = defaultgimp)
 parser.add_argument('--directory', default = ''),
 parser.add_argument('--path', default = ''),

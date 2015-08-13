@@ -19,11 +19,6 @@ def process(inputfile):
             process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
             totalfiles = 1
 
-    endtime = datetime.datetime.now()
-    deltatime = endtime - starttime
-    print "Processed  " + str(totalfiles) + " files\n"
-    print "Operation took " + str(deltatime.seconds) + " seconds"
-
 def thresholdize(inputfile):
     thresholdfile = dir_base_name + "-threshold-tmp.tif"
     print "\n\n"
@@ -603,8 +598,7 @@ def average_color(image):
 
 def main():
     args = config.parse.parse_args()
-
-    process(inputfile)
+    process(args.inputfile)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
