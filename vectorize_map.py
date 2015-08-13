@@ -601,7 +601,9 @@ def average_color(image):
     return (rAvg, gAvg, bAvg)
     # return Image.open(image).resize((1,1)).getpixel((0,0))
 
-def main(argv):
+def main():
+    args = config.parse.parse_args()
+
     global instructions
     global defaultgimp
     global gimp_path
