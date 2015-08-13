@@ -17,9 +17,6 @@ def list_tiffs(inputfile):
             yield (inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
 
 
-           #    process_file(ff, inputfile)
-           #process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
-
 def thresholdize(inputfile):
     thresholdfile = dir_base_name + "-threshold-tmp.tif"
     print "\n\n"
@@ -599,7 +596,9 @@ def average_color(image):
 
 def main():
     args = config.parse.parse_args()
-    process(args.inputfile)
+    for i, (ff, inputfile) in enumerate(list_tiffs(args.inputfile)):
+       process_file(ff, inputfile)
+       print('Processed %d files' % i)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
