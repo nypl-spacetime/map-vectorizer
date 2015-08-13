@@ -1,6 +1,11 @@
 import csv
 
 def parse(config_file):
+    '''
+    :param str config_file: Filename
+    :rtype dict:
+    :returns: 
+    '''
     tempcolors = []
     index = 0
     with open(config_file, 'r') as configcsv:
@@ -17,6 +22,11 @@ def parse(config_file):
             index = index + 1
         if len(tempcolors) > 2:
             basecolors = tempcolors
+
     return {
         'basecolors': basecolors,
+        'brightness': brightness,
+        'contrast': contrast,
+        'thresholdblack': thresholdblack,
+        'thresholdwhite': thresholdwhite,
     }
