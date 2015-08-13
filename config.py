@@ -11,7 +11,10 @@ if os.name == 'posix':
 else:
     defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
 
-parser = argparse.ArgumentParser()
+author_information = 'NYPL Labs Map Vectorizer v0.1 by Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs'
+
+
+parser = argparse.ArgumentParser(description = author_information)
 parser.add_argument('input', metavar = '<input file or dir>')
 parser.add_argument('--gimp-path', default = defaultgimp)
 
@@ -44,9 +47,3 @@ basecolors = [
     ,[161,175,190] # "navy" blue
 ]
 
-author_information = """
-\n\n\n\n
-NYPL Labs Map Vectorizer v0.1 
-=============================
-By: Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs
-"""
