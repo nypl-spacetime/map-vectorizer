@@ -407,11 +407,12 @@ def process_file(args, inputfile, basedir = ""):
     path = os.path.abspath(directory)#fullpath[:fullpath.find("/vectorize_map.py")] + '/' + directory
 
     # GIMP processing
-    dir_base_name = directory + "/" + base_name
+    dir_base_name = os.path.join(directory, base_name)
 
     # create a log file
     # logfile = open(directory + "/py-log.txt", "w")
-    logging.basicConfig(filename=directory + "/py-log.txt",format='%(asctime)s %(message)s',level=logging.DEBUG)
+    logging.basicConfig(filename=os.path.join(directory, "py-log.txt"),
+                        format='%(asctime)s %(message)s',level=logging.DEBUG)
 
     logging.debug("Log file for " + inputfile + " with colors:\n\n")
     logging.debug(str(basecolors) + "\n\n")
