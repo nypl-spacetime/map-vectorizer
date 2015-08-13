@@ -4,20 +4,21 @@ from cv2 import cv
 from config import parser
 from PIL import Image
 
-def process(inputfile):
-    totalfiles = 0
+def list_tiffs(inputfile):
     # If input is a directory iterate through it
     if os.path.isdir(inputfile) == True:
         for ff in os.listdir(inputfile):
             if ff.endswith(".tif"):
-                totalfiles = totalfiles + 1
-                process_file(ff, inputfile)
+                yield (ff, inputfile)
     else:
         # if input is a file, process it
         # but first look to see if there is a path prepending it
         if inputfile.endswith(".tif"):
-            process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
-            totalfiles = 1
+            yield (inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
+
+
+           #    process_file(ff, inputfile)
+           #process_file(inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
 
 def thresholdize(inputfile):
     thresholdfile = dir_base_name + "-threshold-tmp.tif"
