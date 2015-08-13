@@ -3,15 +3,6 @@ import subprocess
 import os
 import argparse
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument('input', metavar = '<input file or dir>')
-
-args = parser.parse_args()
-print(args)
-print(args.input)
-exit()
-
 if os.name == 'posix':
     try:
         defaultgimp = subprocess.check_output(["which", "gimp"])[:-1]
@@ -20,7 +11,15 @@ if os.name == 'posix':
 else:
     defaultgimp = '/Applications/Gimp.app/Contents/MacOS/gimp-2.8'
 
-gimp_path = defaultgimp
+parser = argparse.ArgumentParser()
+parser.add_argument('input', metavar = '<input file or dir>')
+parser.add_argument('--gimp-path', default = defaultgimp)
+
+args = parser.parse_args()
+print(args)
+exit()
+
+
 directory = ''
 path = ''
 base_name = ''
