@@ -13,7 +13,6 @@ else:
 
 author_information = 'NYPL Labs Map Vectorizer v0.1 by Mauricio Giraldo Arteaga @mgiraldo / @nypl_labs'
 
-
 parser = argparse.ArgumentParser(description = author_information)
 parser.add_argument('input', metavar = '<input file or dir>')
 parser.add_argument('--gimp-path', default = defaultgimp)
@@ -25,10 +24,11 @@ parser.add_argument('--chunksize', default = 50000,
                     help = 'how to split the mega polygon file')
 parser.add_argument('--currentchunk', default = 0),
 parser.add_argument('--totalsubsets', default = 0),
-parser.add_argument('--brightness', default = -50),
-parser.add_argument('--contrast', default = 95),
-parser.add_argument('--thresholdblack', default = 145),
-parser.add_argument('--thresholdwhite', default = 255),
+fn = os.path.abspath(os.path.join(__file__, '..', 'vectorize_config_default.txt'))
+parser.add_argument('--image-processing-configuration-file', '-p', default = fn,
+                    dest = 'vectorize_config')
+
+
 
 args = parser.parse_args()
 print(args)
