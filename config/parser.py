@@ -33,6 +33,7 @@ def vectorize_config(fn):
     if os.path.isfile(fn):
         with open(fn) as fp:
             vectorize_config = vectorize_config_parser.parse(fp)
+        return vectorize_config
     else:
         raise ValueError('%s is not a file.' % fn)
 
