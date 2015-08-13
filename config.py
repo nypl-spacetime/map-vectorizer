@@ -1,8 +1,17 @@
 #!/usr/bin/python
 import subprocess
 import os
+import argparse
 
-instructions = 'vectorize_map.py <input file or dir>'
+
+parser = argparse.ArgumentParser()
+parser.add_argument('input', metavar = '<input file or dir>')
+
+args = parser.parse_args()
+print(args)
+print(args.input)
+exit()
+
 if os.name == 'posix':
     try:
         defaultgimp = subprocess.check_output(["which", "gimp"])[:-1]
