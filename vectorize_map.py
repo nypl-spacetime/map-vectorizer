@@ -1,8 +1,8 @@
 #!/usr/bin/python
-import re, sys, getopt, subprocess, shlex, os, datetime, ogr, osr, glob, csv, cv2, logging, string, numpy as np
-from cv2 import cv
+# import re, sys, getopt, subprocess, shlex, os, datetime, ogr, osr, glob, csv, cv2, logging, string, numpy as np
+# from cv2 import cv
 from config import parser
-from PIL import Image
+# from PIL import Image
 
 def list_tiffs(inputfile):
     # If input is a directory iterate through it
@@ -419,7 +419,7 @@ def process_file(args, inputfile, basedir = ""):
 
     thresholdize(inputfile)
 
-    polygonize(dir_base_name
+#   polygonize(dir_base_name
 
     simplify()
 
@@ -592,10 +592,10 @@ def average_color(image):
     # return Image.open(image).resize((1,1)).getpixel((0,0))
 
 def main():
-    args = config.parse.parse_args()
+    args = parser.parse_args()
     for i, (ff, inputfile) in enumerate(list_tiffs(args.inputfile)):
        process_file(ff, inputfile)
        print('Processed %d files' % i)
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
