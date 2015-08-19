@@ -1,8 +1,11 @@
 #!/usr/bin/python
-# import re, sys, getopt, subprocess, shlex, os, datetime, ogr, osr, glob, csv, cv2, logging, string, numpy as np
-# from cv2 import cv
+
+import os, logging, string, subprocess, re, ogr, cv2, numpy as np, osr
+
+from cv2 import cv
+from PIL import Image
+
 from config import parser
-# from PIL import Image
 
 def list_tiffs(inputfile):
     # If input is a directory iterate through it
@@ -17,8 +20,15 @@ def list_tiffs(inputfile):
             yield (inputfile[inputfile.rfind("/")+1:], inputfile[:inputfile.rfind("/")+1])
 
 
-def thresholdize(inputfile):
+def thresholdize(inputfile, dir_base_name):
+    args = parser.parse_args()
+    brightness = args.vectorize_config['brightness']
+    contrast = args.vectorize_config['contrast']
+    thresholdblack = args.vectorize_config['thresholdblack']
+    thresholdwhite = args.vectorize_config['thresholdwhite']
     thresholdfile = dir_base_name + "-threshold-tmp.tif"
+    gimp_path = args.gimp_path
+
     print "\n\n"
     print "Thresholdizing:"
     print "---------------"
@@ -73,7 +83,10 @@ def thresholdize(inputfile):
         # print command
         os.system(command)
 
-def polygonize(dir_base_name):
+def polygonize(dir_base_name, base_name):
+    args = parser.parse_args()
+
+    chunksize = args.chunksize
     currentchunk = 0
     totalsubsets = 0
 
@@ -166,7 +179,9 @@ def polygonize(dir_base_name):
     print "Produced " + str(totalsubsets) + " temporary shapefiles"
     print ""
 
-def simplify():
+    return totalsubsets
+
+def simplify(path, base_name, totalsubsets):
     # R Simplification
 
     print ""
@@ -185,7 +200,7 @@ def simplify():
         os.system(command)
         currentsubset = currentsubset + 1
 
-def consolidate(inputfile):
+def consolidate(inputfile, path, dir_base_name, base_name):
     # Now combine all subsets into a macroset
 
     # 4 create a new data source and layer
@@ -283,6 +298,10 @@ def consolidate(inputfile):
                 nearest = 100000
                 nearestcolor = []
                 nearestcolorindex = -1
+
+                args = parser.parse_args()
+                basecolors = args.vectorize_config['basecolors']
+
                 for i, color in enumerate(basecolors):
                     dred = (color[0] - red) * (color[0] - red)
                     dgreen = (color[1] - green) * (color[1] - green)
@@ -372,20 +391,16 @@ def consolidate(inputfile):
     print "-------------------------------------"
     os.system("cp " + dir_base_name + ".prj " + dir_base_name + "-traced.prj")
 
-def process_file(args, inputfile, basedir = ""):
+def process_file(inputfile, basedir = ""):
 
     """NOTE: This still needs a lot of work for when dealing
        with subfolders and such.
        Best case is image file is located in same dir as vectorizer_map.py
     """
 
-    instructions = args.instructions
-    defaultgimp = args.defaultgimp
+    args = parser.parse_args()
+
     gimp_path = args.gimp_path
-    directory = args.directory
-    path = args.path
-    dir_base_name = args.dir_base_name
-    base_name = args.base_name
 
     print "\n\nProcessing file: " + inputfile
     # right now assuming vectorizer, simplifier and input are in the same folder
@@ -414,16 +429,17 @@ def process_file(args, inputfile, basedir = ""):
     logging.basicConfig(filename=os.path.join(directory, "py-log.txt"),
                         format='%(asctime)s %(message)s',level=logging.DEBUG)
 
+
     logging.debug("Log file for " + inputfile + " with colors:\n\n")
-    logging.debug(str(basecolors) + "\n\n")
+    logging.debug(str(args.vectorize_config['basecolors']) + "\n\n")
 
-    thresholdize(inputfile)
+    thresholdize(inputfile, dir_base_name)
 
-#   polygonize(dir_base_name
+    totalsubsets = polygonize(dir_base_name, base_name)
 
-    simplify()
+    simplify(path, base_name, totalsubsets)
 
-    consolidate(inputfile)
+    consolidate(inputfile, path, dir_base_name, base_name)
 
     print ""
     print "Creating GeoJSON output..."
@@ -450,7 +466,7 @@ def process_file(args, inputfile, basedir = ""):
     os.system("rm " + dir_base_name + ".*")
 
     # close log file
-    # logfile.close()
+    logging.shutdown()
 
 def detect_crosses(im, gray):
     # NOW DETECT CROSSES
@@ -595,7 +611,7 @@ def main():
     args = parser.parse_args()
     for i, (ff, inputfile) in enumerate(list_tiffs(args.inputfile)):
        process_file(ff, inputfile)
-       print('Processed %d files' % i)
+       print('Processed %d file(s)' % (i+1))
 
 if __name__ == "__main__":
     main()
