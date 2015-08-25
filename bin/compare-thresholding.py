@@ -14,4 +14,9 @@ def gimp(inputfile:'file', thresholdfile:'file',
         logging.debug(command)
         os.system(command)
 
+brightness = range(-127, 128, 16)
+contrast = range(0, 100, 10)
+thresholdblack = range(0, 255, 16)
+thresholdwhite = range(0, 255, 16)
+
 gimp('test.tif', '/tmp/threshold.tif', -50, 95, 160, 255)
