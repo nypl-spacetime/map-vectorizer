@@ -1,4 +1,4 @@
-import os, logging, string, subprocess
+import os, logging, string, subprocess, re
 
 def gimp(inputfile):
     dir_base_name = '/tmp/abc'
