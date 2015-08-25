@@ -21,14 +21,8 @@ if os.path.isfile(defaultgimp):
     parser.add_argument('--gimp-path', default = defaultgimp)
 else:
     parser.add_argument('--gimp-path', required = True)
-parser.add_argument('--directory', default = ''),
-parser.add_argument('--path', default = ''),
-parser.add_argument('--base_name', default = ''),
-parser.add_argument('--dir_base_name', default = ''),
 parser.add_argument('--chunksize', default = 50000,
                     help = 'how to split the mega polygon file')
-parser.add_argument('--currentchunk', default = 0),
-parser.add_argument('--totalsubsets', default = 0),
 
 # Load the default vectorize_config
 fn = os.path.abspath(os.path.join(__file__, '..', 'vectorize_config_default.txt'))
