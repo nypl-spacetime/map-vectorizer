@@ -1,14 +1,9 @@
+#!/usr/bin/env python3
 import os, logging, string, subprocess, re
 
-def gimp(inputfile):
-    dir_base_name = '/tmp/abc'
-    brightness = -50
-    contrast = 95
-    thresholdblack = 160
-    thresholdwhite = 255
-
-    thresholdfile = dir_base_name + "-threshold-tmp.tif"
-    gimp_path = '/Users/t/Applications/GIMP.app/Contents/MacOS/GIMP'
+def gimp(inputfile:'file', outputfile:'file',
+         brightness, contrast, thresholdblack, thresholdwhite,
+         gimp_path = '/Users/t/Applications/GIMP.app/Contents/MacOS/GIMP'):
 
     print "\n\n"
     print "Thresholdizing:"
@@ -25,8 +20,6 @@ def gimp(inputfile):
         # print command
         os.system(command)
 
-    outputwsg = dir_base_name + "-wsg-tmp.tif"
-    outputgdal = dir_base_name + "-gdal-tmp.tif"
 
     # first get geotiff data from original
     logging.debug( string.join(["gdalinfo", os.path.abspath(inputfile)]) )
@@ -50,6 +43,5 @@ def gimp(inputfile):
 
     print "Applying to destination:"
     print "------------------------"
-    # print outputgdal
 
-gimp('test.tif')
+gimp('test.tif', '/tmp/threshold.tif', -50, 95, 160, 255)
