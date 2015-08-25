@@ -116,6 +116,16 @@ When you run the vectorizer again, it will find this config file and use those v
 
 It is likely that the vectorizer won't produce excellent results in the first try. It is a matter of adjusting these color values to generalize as much as possible to your map set.
 
+
+## Templates and other files
+`map_vectorizer/templates` contains images that we use in OpenCV to match crosses and other marks on maps.
+
+`test.tif` is a file for testing.
+
+The other images in the root are for the readme.
+
+`simplify_map.R` is used by `vectorize_map.py`
+
 ## Other scripts
 
 *calculate_centroids.py* for adding `CentroidX` and `CentroidY` float attributes to a shapefile/GeoJSON.
