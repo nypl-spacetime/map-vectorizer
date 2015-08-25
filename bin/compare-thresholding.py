@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 import os, logging, string, subprocess, re
 
-def gimp(inputfile:'file', outputfile:'file',
+def gimp(inputfile:'file', thresholdfile:'file',
          brightness, contrast, thresholdblack, thresholdwhite,
          gimp_path = '/Users/t/Applications/GIMP.app/Contents/MacOS/GIMP'):
-
-    print "\n\n"
-    print "Thresholdizing:"
-    print "---------------"
-    print inputfile + " into threshold file: " + thresholdfile
 
     contraststring = '(gimp-brightness-contrast drawable ' + str(brightness) + ' ' + str(contrast) + ')'
     thresholdstring = '(gimp-threshold drawable ' + str(thresholdblack) + ' ' + str(thresholdwhite) + ')'
@@ -17,31 +12,6 @@ def gimp(inputfile:'file', outputfile:'file',
     if (not os.path.isfile(thresholdfile)):
         command = gimp_path + ' -i -b \'' + gimpcommand + '\' -b \'(gimp-quit 0)\''
         logging.debug(command)
-        # print command
         os.system(command)
-
-
-    # first get geotiff data from original
-    logging.debug( string.join(["gdalinfo", os.path.abspath(inputfile)]) )
-    geoText = subprocess.Popen(["gdalinfo", os.path.abspath(inputfile)], stdout=subprocess.PIPE).communicate()[0]
-    pattern = re.compile(r"Upper Left\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*\n.*\n.*\nLower Right\s*\(\s*([0-9\-\.]*),\s*([0-9\-\.]*).*")
-    geoMatch = pattern.findall(geoText)
-    # print pattern
-    print "\n"
-    print "Geodata obtained:"
-    print "-----------------"
-    print "W", geoMatch[0][0]
-    print "N", geoMatch[0][1]
-    print "E", geoMatch[0][2]
-    print "S", geoMatch[0][3]
-    print "\n"
-
-    W = geoMatch[0][0]
-    N = geoMatch[0][1]
-    E = geoMatch[0][2]
-    S = geoMatch[0][3]
-
-    print "Applying to destination:"
-    print "------------------------"
 
 gimp('test.tif', '/tmp/threshold.tif', -50, 95, 160, 255)
