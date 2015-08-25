@@ -1,5 +1,10 @@
+import os
+
+import numpy as np
 import cv2
 from cv2 import cv
+
+CROSS = os.path.abspath(os.path.join(__file__, '..', 'detector_templates', 'cross1.jpg'))
 
 def _gray(im):
     return cv2.cvtColor(im,cv.CV_RGB2GRAY)
@@ -13,7 +18,7 @@ def crosses(inputfile):
 
     score_threshold = 0.954 # certainty there IS a cross
 
-    cross1 = cv2.imread("cross1.jpg")
+    cross1 = cv2.imread(CROSS)
 
     cross_count = 0
     cross_data = {}
