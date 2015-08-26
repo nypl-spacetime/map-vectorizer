@@ -4,9 +4,9 @@ from itertools import product
 
 from PIL import Image, ImageChops
 
-def gimp(inputfile:'file', thresholdfile:'file',
-         brightness, contrast, thresholdblack, thresholdwhite,
-         gimp_path = '/Users/t/Applications/GIMP.app/Contents/MacOS/GIMP'):
+def gimp_one(inputfile:'file', thresholdfile:'file',
+             brightness, contrast, thresholdblack, thresholdwhite,
+             gimp_path = '/Users/t/Applications/GIMP.app/Contents/MacOS/GIMP'):
 
     contraststring = '(gimp-brightness-contrast drawable ' + str(brightness) + ' ' + str(contrast) + ')'
     thresholdstring = '(gimp-threshold drawable ' + str(thresholdblack) + ' ' + str(thresholdwhite) + ')'
@@ -33,9 +33,11 @@ if False:
     c.save('c.png')
 
 
+def compare(left, right):
+    diff = ImageChops.difference(Image.open(left), Image.open(right))
+    return sum(diff.histogram())
 
-
-def main():
+def gimp_many():
     brightness = range(-127, 128, 16)
     contrast = range(0, 100, 10)
     thresholdblack = range(0, 255, 16)
@@ -43,8 +45,8 @@ def main():
 
     for args in product(brightness, contrast, thresholdblack, thresholdwhite):
         fn = '/tmp/gimp_%d_%d_%d_%d.tif' % args
-        print('Writing %s' % fn)
-        gimp('test.tif', fn, *args)
+        if not os.path.isfile(fn):
+            gimp_one('test.tif', fn, *args)
 
 if __name__ == '__main__':
     main()
