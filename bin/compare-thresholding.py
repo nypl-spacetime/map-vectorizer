@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, logging, string, subprocess, re
+import subprocess
 from itertools import product
 
 def gimp(inputfile:'file', thresholdfile:'file',
@@ -11,7 +11,7 @@ def gimp(inputfile:'file', thresholdfile:'file',
     gimpcommand = '(let* ((image (car (file-tiff-load RUN-NONINTERACTIVE "' + inputfile + '" "' + inputfile + '"))) (drawable (car (gimp-image-get-layer-by-name image "Background")))) (gimp-selection-none image) ' + contraststring + ' ' + thresholdstring + ' (gimp-file-save RUN-NONINTERACTIVE image drawable "' + thresholdfile + '" "' + thresholdfile + '") (gimp-image-delete image))'
 
     command = gimp_path + ' -i -b \'' + gimpcommand + '\' -b \'(gimp-quit 0)\''
-    os.system(command)
+    subprocess.call(command, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
 brightness = range(-127, 128, 16)
 contrast = range(0, 100, 10)
@@ -19,4 +19,6 @@ thresholdblack = range(0, 255, 16)
 thresholdwhite = range(0, 255, 16)
 
 for args in product(brightness, contrast, thresholdblack, thresholdwhite):
-    gimp('test.tif', '/tmp/gimp_%d_%d_%d_%d.tif' % args, *args)
+    fn = '/tmp/gimp_%d_%d_%d_%d.tif' % args
+    print('Writing %s' % fn)
+    gimp('test.tif', fn, *args)
