@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import subprocess
+import subprocess, os
 from itertools import product
 
 from PIL import Image, ImageChops
@@ -7,14 +7,16 @@ from PIL import Image, ImageChops
 def gimp_one(inputfile:'file', thresholdfile:'file',
              brightness, contrast, thresholdblack, thresholdwhite,
              gimp_path = '/Users/t/Applications/GIMP.app/Contents/MacOS/GIMP'):
-
-    contraststring = '(gimp-brightness-contrast drawable ' + str(brightness) + ' ' + str(contrast) + ')'
-    thresholdstring = '(gimp-threshold drawable ' + str(thresholdblack) + ' ' + str(thresholdwhite) + ')'
-    gimpcommand = '(let* ((image (car (file-tiff-load RUN-NONINTERACTIVE "' + inputfile + '" "' + inputfile + '"))) (drawable (car (gimp-image-get-layer-by-name image "Background")))) (gimp-selection-none image) ' + contraststring + ' ' + thresholdstring + ' (gimp-file-save RUN-NONINTERACTIVE image drawable "' + thresholdfile + '" "' + thresholdfile + '") (gimp-image-delete image))'
-
-    command = gimp_path + ' -i -b \'' + gimpcommand + '\' -b \'(gimp-quit 0)\''
-    print(command)
-    subprocess.call(command, shell = True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    args = {
+        'inputfile': inputfile,
+        'thresholdfile': thresholdfile,
+        'brightness': brightness,
+        'contrast': contrast,
+        'thresholdblack': thresholdblack,
+        'thresholdwhite': thresholdwhite,
+    }
+    command = [gimp_path, '-i', '-b', gimp_func % args, '-b' '(gimp-quit 0)']
+    subprocess.call(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
 def compare(left, right):
     diff = ImageChops.difference(a, b)
@@ -24,13 +26,22 @@ def compare(left, right):
     new.paste(b, mask=diff)
     return new
 
-# /Users/t/Applications/GIMP.app/Contents/MacOS/GIMP -i -b '(let* ((image (car (file-tiff-load RUN-NONINTERACTIVE "test.tif" "test.tif"))) (drawable (car (gimp-image-get-layer-by-name image "Background")))) (gimp-selection-none image) (gimp-brightness-contrast drawable -127 0) (gimp-threshold drawable 0 16) (gimp-file-save RUN-NONINTERACTIVE image drawable "/tmp/gimp_-127_0_0_16.tif" "/tmp/gimp_-127_0_0_16.tif") (gimp-image-delete image))' -b '(gimp-quit 0)'
 
-if False:
-    a = Image.open('a.png')
-    b = Image.open('b.png')
-    c = black_or_b(a, b)
-    c.save('c.png')
+gimp_func = '''
+(let*
+  (
+    (image 
+      (car
+        (file-tiff-load RUN-NONINTERACTIVE "%(inputfile)s" "%(inputfile)s") )) 
+    (drawable 
+      (car 
+        (gimp-image-get-layer-by-name image "Background")))) 
+  (gimp-selection-none image) 
+  (gimp-brightness-contrast drawable %(brightness)d %(contrast)d)
+  (gimp-threshold drawable %(thresholdblack)d %(thresholdwhite)d) 
+  (gimp-file-save RUN-NONINTERACTIVE image drawable "%(thresholdfile)s" "%(thresholdfile)s")
+  (gimp-image-delete image))'
+'''
 
 
 def compare(left, right):
@@ -49,4 +60,4 @@ def gimp_many():
             gimp_one('test.tif', fn, *args)
 
 if __name__ == '__main__':
-    main()
+    gimp_many() # main()
