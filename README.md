@@ -81,6 +81,29 @@ This should take about 70 seconds to process. **If it takes less there might be 
 
 If it works, you will see a `test` folder with a `test-traced` set of files (`.shp`, `.dbf`, `.prj` and `.shx`) and two log files.
 
+## Configuring
+`vectorize_map.py` supports a few configuration options.
+
+```
+$ ./vectorize_map.py --help
+usage: vectorize_map.py [-h] --gimp-path GIMP_PATH [--chunksize CHUNKSIZE]
+                        [--image-processing-configuration-file VECTORIZE_CONFIG]
+                        <input file or dir>
+
+NYPL Labs Map Vectorizer v0.2 by Mauricio Giraldo Arteaga @mgiraldo /
+@nypl_labs / Thomas Levine (https://thomaslevine.com)
+
+positional arguments:
+  <input file or dir>
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --gimp-path GIMP_PATH
+  --chunksize CHUNKSIZE
+                        how to split the mega polygon file
+  --image-processing-configuration-file VECTORIZE_CONFIG, -p VECTORIZE_CONFIG
+```
+
 ## Customizing The Vectorizer to your own maps
 
 The Vectorizer was made to work with the [NYPL map atlases](http://digitalcollections.nypl.org/search/index?filters%5Btitle_uuid_s%5D%5B%5D=Maps%20of%20the%20city%20of%20New%20York%7C%7C323e4180-c603-012f-0c9f-58d385a7bc34&keywords=&layout=false#/?scroll=24). It is likely that your maps have different quality and colors. In order for this to work in your maps, you first need to do some minor config adjustments to generate a proper threshold file for your set (assuming it is a map set similar to the provided example `test.tif`):
