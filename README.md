@@ -184,6 +184,7 @@ Usage: `python consolidator.py path/to/folder` (no trailing slash)
 
 [@mgiraldo]: https://twitter.com/mgiraldo
 [@nypl_labs]: https://twitter.com/nypl_labs
+[@thomaslevine]: https://twitter.com/thomaslevine
 [Python]: http://www.python.org/
 [OpenCV]: http://opencv.org/
 [PIL]: http://pythonware.com/products/pil/
