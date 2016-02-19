@@ -4,6 +4,8 @@ Map polygon and feature extractor
 
 **Author:** Mauricio Giraldo Arteaga [@mgiraldo] / NYPL Labs [@nypl_labs]
 
+Additional contributor: (Thomas Levine)[@tlevine]
+
 A open-source map vectorizer. Provided **as is** by [NYPL Labs](http://www.nypl.org/collections/labs). Project based on a workflow suggested by Michael Resig.
 
 ## Like OCR for maps
@@ -93,15 +95,18 @@ usage: vectorize_map.py [-h] --gimp-path GIMP_PATH [--chunksize CHUNKSIZE]
 NYPL Labs Map Vectorizer v0.2 by Mauricio Giraldo Arteaga @mgiraldo /
 @nypl_labs / Thomas Levine (https://thomaslevine.com)
 
-positional arguments:
-  <input file or dir>
+required argument:
+  <input file or dir>   path to file (or folder with files) to vectorize
 
 optional arguments:
   -h, --help            show this help message and exit
   --gimp-path GIMP_PATH
-  --chunksize CHUNKSIZE
-                        how to split the mega polygon file
+                        path to GIMP executable
+                        (defaults to /Applications/Gimp.app/Contents/MacOS/gimp-2.8)
   --image-processing-configuration-file VECTORIZE_CONFIG, -p VECTORIZE_CONFIG
+                        path to map image processing configuration file
+                        (defaults to vectorize_config_default.txt)
+  --chunksize CHUNKSIZE (ignore this but determines how to split temp file)
 ```
 
 ## Customizing The Vectorizer to your own maps
