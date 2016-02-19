@@ -86,7 +86,7 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 ## Configuring
 `vectorize_map.py` supports a few configuration options.
 
-```
+```bash
 $ ./vectorize_map.py --help
 usage: vectorize_map.py [-h] --gimp-path GIMP_PATH [--chunksize CHUNKSIZE]
                         [--image-processing-configuration-file VECTORIZE_CONFIG]
