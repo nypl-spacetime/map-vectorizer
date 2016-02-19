@@ -92,7 +92,7 @@ usage: vectorize_map.py [-h] --gimp-path GIMP_PATH [--chunksize CHUNKSIZE]
                         <input file or dir>
 ```
 
-### Required arguments
+### Required argument
 - `<input file or dir>` path to file (or folder with files) to vectorize
 
 ### Semi-optional arguments
@@ -102,7 +102,7 @@ This are really required because 1) you won't have GIMP installed in the same fo
 - `--gimp-path GIMP_PATH` path to GIMP executable (defaults to `/Applications/Gimp.app/Contents/MacOS/gimp-2.8`)
 - `--image-processing-configuration-file VECTORIZE_CONFIG, -p VECTORIZE_CONFIG` path to map image processing configuration file (defaults to `vectorize_config_default.txt`)
 
-### Optional arguments:
+### Optional arguments
 
 - `-h, --help` show help message and exit
 - `--chunksize CHUNKSIZE` (ignore this but determines how to split temp file… but really, ignore it)
