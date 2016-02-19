@@ -87,27 +87,20 @@ If it works, you will see a `test` folder with a `test-traced` set of files (`.s
 `vectorize_map.py` supports a few configuration options.
 
 ```bash
-$ ./vectorize_map.py --help
 usage: vectorize_map.py [-h] --gimp-path GIMP_PATH [--chunksize CHUNKSIZE]
                         [--image-processing-configuration-file VECTORIZE_CONFIG]
                         <input file or dir>
-
-NYPL Labs Map Vectorizer v0.2 by Mauricio Giraldo Arteaga @mgiraldo /
-@nypl_labs / Thomas Levine (https://thomaslevine.com)
-
-required argument:
-  <input file or dir>   path to file (or folder with files) to vectorize
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --gimp-path GIMP_PATH
-                        path to GIMP executable
-                        (defaults to /Applications/Gimp.app/Contents/MacOS/gimp-2.8)
-  --image-processing-configuration-file VECTORIZE_CONFIG, -p VECTORIZE_CONFIG
-                        path to map image processing configuration file
-                        (defaults to vectorize_config_default.txt)
-  --chunksize CHUNKSIZE (ignore this but determines how to split temp file)
 ```
+
+### Required argument:
+- `<input file or dir>` path to file (or folder with files) to vectorize
+
+### Optional arguments:
+
+- `-h, --help` show help message and exit
+- `--gimp-path GIMP_PATH` path to GIMP executable (defaults to `/Applications/Gimp.app/Contents/MacOS/gimp-2.8`)
+- `--image-processing-configuration-file VECTORIZE_CONFIG, -p VECTORIZE_CONFIG` path to map image processing configuration file (defaults to `vectorize_config_default.txt`)
+- `--chunksize CHUNKSIZE` (ignore this but determines how to split temp file… but really, ignore it)
 
 ## Customizing The Vectorizer to your own maps
 
