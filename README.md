@@ -154,13 +154,9 @@ The other images in the root are for the readme.
 
 ## Other scripts
 
-*calculate_centroids.py* for adding `CentroidX` and `CentroidY` float attributes to a shapefile/GeoJSON.
+*bin/consolidator.py* for consolidating multiple outputs of a `vectorize_map.py` process into a single shapefile/GeoJSON. For example, when you run `vectorize_map.py` on a folder full of GeoTIFFs and then need to group all the individual folder outputs into a master file.
 
-Usage: `python calculate_centroids.py geojson input.json output.json`
-
-*consolidator.py* for consolidating multiple outputs of a `vectorize_map.py` process into a single shapefile/GeoJSON. For example, when you run `vectorize_map.py` on a folder full of GeoTIFFs and then need to group all the individual folder outputs into a master file.
-
-Usage: `python consolidator.py path/to/folder` (no trailing slash)
+Usage: `./bin/consolidator.py path/to/folder` (no trailing slash)
 
 ## Acknowledgements
 
@@ -170,6 +166,7 @@ Usage: `python consolidator.py path/to/folder` (no trailing slash)
 
 ## Change log
 
+* 0.10: Refactored Python code for better parameter management and cleaner folder structure.
 * 0.9: Vectorizer now produces centroids (`calculate_centroids.py` is less necessary now).
 * 0.8: Documented `consolidator.py`. Minor bug fixes.
 * 0.7: Calculating average color with PIL instead of ImageMagick. Removed ImageMagick dependency, added PIL as dependency.
