@@ -1,0 +1,3 @@
+Pillow
+gdal==1.11.2
+numpy
