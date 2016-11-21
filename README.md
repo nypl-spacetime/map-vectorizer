@@ -48,7 +48,16 @@ A few things to be installed in your system in order to work properly. So far it
     * `igraph`
     * `shapefiles`
     * `rgdal` (download the [binary for your OS](http://cran.r-project.org/web/packages/rgdal/index.html) then run `R CMD INSTALL --configure-args="" path/to/rgdal.tar.gz`)
-    * On the CLI (by typing `R` in a terminal window) you will know you have all the required dependencies if you can run this with no errors:
+    * You can also install the requirements by running this in the R CLI (by typing `R` in a terminal window):
+
+```
+    install.packages('rgdal')
+    install.packages('alphahull')
+    install.packages('igraph')
+    install.packages('shapefiles')
+```
+
+    * To test that everything is installed, on the CLI you should be able to run this with no errors:
 
 ```
     library(rgdal)
