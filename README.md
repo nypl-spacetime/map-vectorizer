@@ -57,7 +57,7 @@ A few things to be installed in your system in order to work properly. So far it
     install.packages('shapefiles')
 ```
 
-    * To test that everything is installed, on the CLI you should be able to run this with no errors:
+* Test that everything in R is installed, on the CLI you should be able to run this with no errors:
 
 ```
     library(rgdal)
