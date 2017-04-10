@@ -43,7 +43,8 @@ The goal is to extract the following data (✔ = mostly solved so far, ✢ = in 
 
 A few things to be installed in your system in order to work properly. So far it has been **tested on Mac OS X Lion** so these instructions apply to that configuration only. I am sure you will be able to adapt it to your current configuration.
 
-* [Python] with [OpenCV] and [PIL]
+* [Python] with [OpenCV] and [PIL] 
+    * If you use [PIP](https://pypi.python.org/pypi) (recommended) you will get the necessary Python packages with: `pip install -r requirements.txt`
 * [R] - Make sure it is in your PATH (so you can run it via command-line by typing `R`).
 * You'll need the following R packages. On OS X simply navigate to `Packages & Data`, choose your CRAN mirror region, then search for and install:
     * `alphahull` (you will need `tripack`, `sgeostat`, `splancs` as dependencies)
@@ -177,6 +178,7 @@ Usage: `./bin/consolidator.py path/to/folder` (no trailing slash)
 
 ## Change log
 
+* 0.11: Including OpenCV in the `requirements.txt`.
 * 0.10: Refactored Python code for better parameter management and cleaner folder structure.
 * 0.9: Vectorizer now produces centroids (`calculate_centroids.py` is less necessary now).
 * 0.8: Documented `consolidator.py`. Minor bug fixes.
