@@ -1,13 +1,13 @@
 import os
 
 import numpy as np
-import cv2
-from cv2 import cv
+import cv2 
+import cv2 as cv
 
 CROSS = os.path.abspath(os.path.join(__file__, '..', 'detector_templates', 'cross1.jpg'))
 
 def _gray(im):
-    return cv2.cvtColor(im,cv.CV_RGB2GRAY)
+    return cv2.cvtColor(im,cv2.COLOR_RGB2GRAY)
 
 def crosses(inputfile):
     im=cv2.imread(inputfile)
@@ -24,7 +24,7 @@ def crosses(inputfile):
     cross_data = {}
 
     if cross1.shape[0] < im.shape[0] and cross1.shape[1] < im.shape[1]:
-        graycross1 = cv2.cvtColor(cross1,cv.CV_RGB2GRAY)
+        graycross1 = cv2.cvtColor(cross1,cv2.COLOR_RGB2GRAY)
         match1 = cv2.matchTemplate(gray, graycross1, cv2.TM_CCORR_NORMED)
         min_score, max_score, (min_x, min_y), (max_x, max_y) = cv2.minMaxLoc(match1)
 
@@ -43,7 +43,7 @@ def circles(inputfile):
 
     max_dist = 20 # distance between circles to consider it an empty circle
 
-    circles = cv2.HoughCircles(gray, cv.CV_HOUGH_GRADIENT, 1, 2, np.array([]), 200, 8, 4, 8)
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 2, np.array([]), 200, 8, 4, 8)
 
     total_circles = 0
 
