@@ -8,7 +8,9 @@ Additional contributor: Thomas Levine [@thomaslevine]
 
 A open-source map vectorizer. Provided **as is** by [NYPL Labs](http://www.nypl.org/collections/labs). Project based on a workflow suggested by Michael Resig.
 
-The output of this process can be verified by volunteers with the [Building Inspector](https://github.com/nypl/building-inspector).
+The output of this process can be verified by volunteers with the [Building Inspector](https://github.com/nypl/building-inspector). 
+
+[A paper](map-poly-paper.pdf) on this process was [published in the MapInteract '13 Proceedings of the 1st ACM SIGSPATIAL International Workshop on MapInteraction](http://dl.acm.org/citation.cfm?id=2534932&CFID=966849878&CFTOKEN=93984154) where it won the Best Paper Award.
 
 ## Like OCR for maps
 
